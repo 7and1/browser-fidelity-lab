@@ -3,7 +3,19 @@ import { useMemo, useState } from "react";
 import { exportPreset, presets } from "@browser-fidelity/device-presets";
 
 type ExportTab = "config" | "node" | "python" | "json" | "ci";
-type PresetFilter = "all" | "mobile" | "desktop" | "chromium" | "webkit" | "firefox" | "us" | "eu" | "asia";
+type PresetFilter =
+  | "all"
+  | "mobile"
+  | "desktop"
+  | "chromium"
+  | "webkit"
+  | "firefox"
+  | "us"
+  | "gb"
+  | "de"
+  | "jp"
+  | "eu"
+  | "asia";
 
 export function PresetGenerator() {
   const [presetId, setPresetId] = useState("pixel-8-us");
@@ -156,11 +168,14 @@ const presetFilters: Array<{ id: PresetFilter; label: string }> = [
   { id: "webkit", label: "WebKit" },
   { id: "firefox", label: "Firefox" },
   { id: "us", label: "US" },
+  { id: "gb", label: "GB" },
+  { id: "de", label: "DE" },
+  { id: "jp", label: "JP" },
   { id: "eu", label: "Europe" },
   { id: "asia", label: "Asia" }
 ];
 
 function filterPresets(filter: PresetFilter) {
   if (filter === "all") return presets;
-  return presets.filter((preset) => preset.tags.includes(filter));
+  return presets.filter((preset) => preset.tags.includes(filter) || preset.region.toLowerCase() === filter);
 }

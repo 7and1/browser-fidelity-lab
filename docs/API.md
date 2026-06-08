@@ -88,3 +88,7 @@ Rules:
 - `Content-Type` must include `application/json`.
 - Payload must be 1 KB or smaller.
 - Unknown preset IDs return a public error.
+- Preset objects include `tags` and `region` so UI and CI callers can filter by
+  device class, browser engine, and geography.
+- Successful responses include `playwrightConfig`, `nodeSnippet`,
+  `pythonSnippet`, `jsonPreset`, `ciMatrix`, and `ciRecipe`.

@@ -36,16 +36,13 @@ for (const file of requiredFiles) {
 }
 
 const localMetadataFiles = trackedFiles(".DS_Store");
+const metadataFindings = [...new Set([...localMetadataFiles.tracked, ...localMetadataFiles.local])];
 check(
   "repo:local-metadata",
-  localMetadataFiles.tracked.length === 0,
-  localMetadataFiles.mode === "git"
-    ? localMetadataFiles.tracked.length
-      ? `remove tracked local metadata files: ${localMetadataFiles.tracked.join(", ")}`
-      : "no tracked local metadata files found"
-    : localMetadataFiles.local.length
-      ? `not a git repo; ignored local metadata files: ${localMetadataFiles.local.join(", ")}`
-      : "not a git repo; no local metadata files found"
+  metadataFindings.length === 0,
+  metadataFindings.length
+    ? `remove local metadata files: ${metadataFindings.join(", ")}`
+    : "no tracked or untracked local metadata files found"
 );
 
 const packageJson = readJson("package.json");
@@ -128,6 +125,7 @@ function findFiles(dir, filename, results = []) {
 }
 
 function trackedFiles(filename) {
+  const local = findFiles(root, filename);
   try {
     execFileSync("git", ["-C", root, "rev-parse", "--is-inside-work-tree"], {
       encoding: "utf8",
@@ -142,9 +140,9 @@ function trackedFiles(filename) {
       tracked: output
         .split("\0")
         .filter((file) => file.endsWith(`/${filename}`) || file === filename),
-      local: []
+      local
     };
   } catch {
-    return { mode: "filesystem", tracked: [], local: findFiles(root, filename) };
+    return { mode: "filesystem", tracked: [], local };
   }
 }

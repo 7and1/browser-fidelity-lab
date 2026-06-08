@@ -33,6 +33,8 @@ const { id } = Astro.params;
     </div>
   </section>
   <script>
+    import { rankRemediations, type Mismatch } from "@browser-fidelity/fidelity-core";
+
     class ReportViewer extends HTMLElement {
       connectedCallback() {
         const id = this.dataset.id;
@@ -227,7 +229,7 @@ const { id } = Astro.params;
       return section;
     }
 
-    function fixFirstSection(items: Array<ReportMismatch>) {
+    function fixFirstSection(items: Array<Mismatch>) {
       const section = document.createElement("div");
       section.className = "fix-first";
       const header = document.createElement("div");
@@ -235,7 +237,7 @@ const { id } = Astro.params;
       eyebrow.className = "eyebrow";
       eyebrow.textContent = "Fix this first";
       const heading = document.createElement("h3");
-      const ranked = rankReportMismatches(items);
+      const ranked = rankRemediations(items);
       heading.textContent = ranked[0]?.title ?? "No prioritized fixes";
       header.append(eyebrow, heading);
       section.append(header);
@@ -254,11 +256,11 @@ const { id } = Astro.params;
 
       for (const item of ranked.slice(0, 3)) {
         const row = document.createElement("div");
-        row.className = `mismatch ${item.severity ?? "info"}`;
+        row.className = `mismatch ${item.severity}`;
         const title = document.createElement("strong");
         title.textContent = `${item.priority}. ${item.title}`;
         const detail = document.createElement("p");
-        detail.textContent = remediationFor(item.category);
+        detail.textContent = item.action;
         row.append(title, detail);
         section.append(row);
       }
@@ -266,63 +268,32 @@ const { id } = Astro.params;
       return section;
     }
 
-    function mismatchSection(items: Array<ReportMismatch>) {
+    function mismatchSection(items: Array<Mismatch>) {
       const section = document.createElement("div");
       section.className = "doc-content";
       const heading = document.createElement("h2");
       heading.textContent = "Mismatches";
       const list = document.createElement("ul");
-      const rows = items.length
-        ? items
-        : [{ title: "No mismatches detected.", detail: "The observed browser and network signals are internally coherent." }];
-      for (const item of rows) {
+      if (!items.length) {
         const row = document.createElement("li");
         const title = document.createElement("strong");
-        title.textContent = item.severity ? `[${item.severity}] ${item.title}` : item.title;
+        title.textContent = "No mismatches detected.";
         const detail = document.createElement("span");
-        detail.textContent = `${item.detail} ${remediationFor(item.category)}`;
+        detail.textContent = "The observed browser and network signals are internally coherent.";
+        row.append(title, document.createElement("br"), detail);
+        list.append(row);
+      }
+      for (const item of rankRemediations(items)) {
+        const row = document.createElement("li");
+        const title = document.createElement("strong");
+        title.textContent = `[${item.severity}] ${item.title}`;
+        const detail = document.createElement("span");
+        detail.textContent = `${item.detail} ${item.action}`;
         row.append(title, document.createElement("br"), detail);
         list.append(row);
       }
       section.append(heading, list);
       return section;
-    }
-
-    interface ReportMismatch {
-      id?: string;
-      title: string;
-      detail: string;
-      severity?: string;
-      category?: string;
-      weight?: number;
-      priority?: number;
-    }
-
-    function rankReportMismatches(items: Array<ReportMismatch>) {
-      const severityRank: Record<string, number> = { critical: 0, warning: 1, info: 2 };
-      return [...items]
-        .sort((left, right) => {
-          const severityDelta = (severityRank[left.severity ?? "info"] ?? 2) - (severityRank[right.severity ?? "info"] ?? 2);
-          if (severityDelta !== 0) return severityDelta;
-          return (right.weight ?? 0) - (left.weight ?? 0);
-        })
-        .map((item, index) => ({ ...item, priority: index + 1 }));
-    }
-
-    function remediationFor(category: string | undefined) {
-      if (category === "geo" || category === "network") {
-        return "Review timezone, locale, geolocation, and network route before using this profile as regional QA evidence.";
-      }
-      if (category === "device" || category === "runtime") {
-        return "Review user agent, viewport, DPR, touch, pointer, and renderer settings in the browser or Playwright preset.";
-      }
-      if (category === "privacy") {
-        return "Review WebRTC policy and browser launch options before using this environment for network-sensitive testing.";
-      }
-      if (category === "automation") {
-        return "Review automation exposure and test-runner launch settings.";
-      }
-      return "";
     }
 
     interface BrowserReport {

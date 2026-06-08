@@ -56,12 +56,12 @@ async function main(argv: string[]): Promise<void> {
 
   if (options.markdown) {
     process.stdout.write(renderMarkdownReport(envelope));
-    if (ci && !ci.passed) process.exitCode = 1;
+    process.exitCode = exitCodeForCi(ci);
     return;
   }
 
   process.stdout.write(formatAuditOutput(options, envelope, ci));
-  if (ci && !ci.passed) process.exitCode = 1;
+  process.exitCode = exitCodeForCi(ci);
 }
 
 export function parseArgs(argv: string[]): CliOptions {
@@ -107,6 +107,10 @@ export function evaluateCiThreshold(
     failUnder,
     passed: score >= failUnder
   };
+}
+
+export function exitCodeForCi(ci: CiThresholdResult | undefined): 0 | 1 {
+  return ci && !ci.passed ? 1 : 0;
 }
 
 export function formatAuditOutput(

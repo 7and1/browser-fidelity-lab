@@ -3,17 +3,27 @@ import { exportPreset, getPreset, presets } from "../index";
 
 describe("device presets", () => {
   it("ships expected starter presets", () => {
-    expect(presets.map((preset) => preset.id)).toContain("pixel-8-us");
-    expect(presets.map((preset) => preset.id)).toContain("desktop-chrome-us");
-    expect(presets.map((preset) => preset.id)).toContain("desktop-webkit-us");
-    expect(presets.map((preset) => preset.id)).toContain("iphone-15-gb");
-    expect(presets.map((preset) => preset.id)).toContain("desktop-chrome-de");
+    expect(presets.map((preset) => preset.id)).toEqual(
+      expect.arrayContaining([
+        "desktop-chrome-us",
+        "desktop-firefox-gb",
+        "desktop-webkit-us",
+        "pixel-8-us",
+        "android-tokyo",
+        "iphone-15-us",
+        "iphone-15-gb",
+        "desktop-chrome-de"
+      ])
+    );
   });
 
   it("ships region and filter tags for every preset", () => {
     for (const preset of presets) {
       expect(preset.region).toMatch(/^[A-Z]{2}$/);
       expect(preset.tags.length).toBeGreaterThan(0);
+      expect(preset.tags).toContain(preset.isMobile ? "mobile" : "desktop");
+      expect(preset.tags).toContain(preset.browserName);
+      expect(preset.tags).toContain(preset.region.toLowerCase());
     }
   });
 

@@ -79,15 +79,14 @@ export function EnvironmentScanner() {
     ];
   }, [report]);
 
-  const rankedRemediations = useMemo(() => {
+  const allRemediations = useMemo(() => {
     if (!score) return [];
-    return rankRemediations(score.mismatches).filter((item) => matchesScoreFilter(item.category, scoreFilter));
-  }, [score, scoreFilter]);
+    return rankRemediations(score.mismatches);
+  }, [score]);
 
-  const filteredMismatches = useMemo(() => {
-    if (!score) return [];
-    return score.mismatches.filter((mismatch) => matchesScoreFilter(mismatch.category, scoreFilter));
-  }, [score, scoreFilter]);
+  const rankedRemediations = useMemo(() => {
+    return allRemediations.filter((item) => matchesScoreFilter(item.category, scoreFilter));
+  }, [allRemediations, scoreFilter]);
 
   async function runScan() {
     setState("running");
@@ -305,12 +304,12 @@ export function EnvironmentScanner() {
                 )}
               </div>
               <div className="mismatch-list">
-                {filteredMismatches.length ? (
-                  filteredMismatches.map((mismatch) => (
-                    <div className={`mismatch ${mismatch.severity}`} key={mismatch.id}>
-                      <strong>{mismatch.title}</strong>
-                      <p>{mismatch.detail}</p>
-                      <p className="remediation">{remediationFor(mismatch.category)}</p>
+                {rankedRemediations.length ? (
+                  rankedRemediations.map((item) => (
+                    <div className={`mismatch ${item.severity}`} key={item.mismatchId}>
+                      <strong>{item.title}</strong>
+                      <p>{item.detail}</p>
+                      <p className="remediation">{item.action}</p>
                     </div>
                   ))
                 ) : (
@@ -377,22 +376,6 @@ function suggestedPlaywrightUse(report: BrowserSignalReport): string {
   };
 
   return `use: ${JSON.stringify(fields, null, 2)}`;
-}
-
-function remediationFor(category: string): string {
-  if (category === "geo" || category === "network") {
-    return "Fix route, timezone, locale, and optional geolocation before using the result as regional QA evidence.";
-  }
-  if (category === "device" || category === "runtime") {
-    return "Align user agent, viewport, DPR, touch, pointer, and renderer fields in the browser profile or Playwright preset.";
-  }
-  if (category === "privacy") {
-    return "Review WebRTC policy and browser launch options before using this profile for network-sensitive testing.";
-  }
-  if (category === "automation") {
-    return "Review test runner launch options and automation exposure before treating the profile as production-like.";
-  }
-  return "Review this signal before using the environment as QA evidence.";
 }
 
 function ScoreTile({ label, value }: { label: string; value: number }) {

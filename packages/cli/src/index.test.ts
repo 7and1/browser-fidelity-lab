@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluateCiThreshold, formatAuditOutput, parseArgs } from "./index";
+import { evaluateCiThreshold, exitCodeForCi, formatAuditOutput, parseArgs } from "./index";
 
 describe("browser-fidelity CLI options", () => {
   it("parses fail-under thresholds for audits", () => {
@@ -30,6 +30,12 @@ describe("browser-fidelity CLI options", () => {
     expect(evaluateCiThreshold(91, 90)).toEqual({ score: 91, failUnder: 90, passed: true });
     expect(evaluateCiThreshold(89, 90)).toEqual({ score: 89, failUnder: 90, passed: false });
     expect(evaluateCiThreshold(89, undefined)).toBeUndefined();
+  });
+
+  it("maps fail-under results to CI exit codes", () => {
+    expect(exitCodeForCi({ score: 91, failUnder: 90, passed: true })).toBe(0);
+    expect(exitCodeForCi({ score: 89, failUnder: 90, passed: false })).toBe(1);
+    expect(exitCodeForCi(undefined)).toBe(0);
   });
 
   it("adds CI result while keeping score and report in JSON output", () => {

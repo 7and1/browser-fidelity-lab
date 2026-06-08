@@ -47,11 +47,13 @@ const schema = {
         production fixture.
       </p>
       <h2>Recommended workflow</h2>
-      <p>
-        Run a scan, fix the highest-impact mismatch first, export the matching
-        preset, then let CI fail when the audited browser drops below your score
-        threshold.
-      </p>
+      <ol>
+        <li>Run a local scan on the target page from the browser profile you plan to use for QA.</li>
+        <li>Fix the first ranked mismatch before tuning lower-impact signals.</li>
+        <li>Export the closest preset or copy the suggested Playwright `use` block.</li>
+        <li>Commit the preset beside the Playwright project so changes are reviewed.</li>
+        <li>Add a CI threshold check with `--fail-under` so drift fails before release.</li>
+      </ol>
       <pre class="code-box" tabindex="0" aria-label="Browser fidelity CLI threshold example"><code>{`browser-fidelity audit https://example.com \\
   --preset desktop-chrome-us \\
   --fail-under 90 \\
