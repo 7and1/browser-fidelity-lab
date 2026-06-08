@@ -1,0 +1,109 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "User Agent Parser",
+  url: "https://cloakbrowser.org/tools/user-agent-parser",
+  applicationCategory: "DeveloperApplication",
+  description:
+    "Parse browser, operating system, and device class from a user agent string using Browser Fidelity Lab heuristics."
+};
+---
+
+<BaseLayout
+  title="User Agent Parser | Browser Fidelity Lab"
+  description="Parse browser, operating system, and device class from a user agent string using conservative Browser Fidelity Lab heuristics."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="/tools">Tools</a>
+      <span aria-hidden="true">/</span>
+      <span>User agent parser</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Tool</p>
+      <h1>User agent parser</h1>
+      <p class="subhead">
+        Parse browser, operating system, and device class from a user agent
+        string using the same conservative heuristics as the scanner.
+      </p>
+    </div>
+    <div class="panel">
+      <div class="panel-body">
+        <ua-parser></ua-parser>
+      </div>
+    </div>
+    <article class="doc-content">
+      <h2>What does this parser identify?</h2>
+      <p>
+        It extracts a conservative browser name and device class from the user
+        agent string. The scanner then compares that result with viewport, DPR,
+        touch, pointer, and rendering signals.
+      </p>
+      <h2>Why is user agent parsing not enough?</h2>
+      <p>
+        User agents are only one signal. A mobile user agent with desktop
+        viewport geometry or no touch support is still inconsistent for QA even
+        when the parser says the string is mobile.
+      </p>
+      <h2>Next step</h2>
+      <p>
+        Run the full browser scan after parsing to check whether the rest of the
+        browser-visible environment matches the claimed device and browser.
+      </p>
+    </article>
+  </section>
+  <script>
+    class UaParser extends HTMLElement {
+      connectedCallback() {
+        const wrapper = document.createElement("div");
+        wrapper.className = "form-grid";
+        const field = document.createElement("div");
+        field.className = "field";
+        const label = document.createElement("label");
+        label.htmlFor = "ua-input";
+        label.textContent = "User agent";
+        const input = document.createElement("input");
+        input.id = "ua-input";
+        input.value = navigator.userAgent;
+        const output = document.createElement("pre");
+        output.className = "code-box";
+        output.id = "ua-output";
+        output.tabIndex = 0;
+        output.setAttribute("role", "status");
+        output.setAttribute("aria-live", "polite");
+        output.setAttribute("aria-label", "Parsed user agent result");
+        const code = document.createElement("code");
+        output.append(code);
+        field.append(label, input);
+        wrapper.append(field, output);
+        this.replaceChildren(wrapper);
+
+        const parse = () => {
+          const ua = input.value;
+          const device = /ipad|tablet/i.test(ua)
+            ? "tablet"
+            : /mobile|iphone|android/i.test(ua)
+              ? "mobile"
+              : "desktop";
+          const browser = /Firefox\//.test(ua)
+            ? "Firefox"
+            : /Chrome\//.test(ua)
+              ? "Chrome"
+              : /Safari\//.test(ua)
+                ? "Safari"
+                : "unknown";
+          code.textContent = JSON.stringify({ browser, device }, null, 2);
+        };
+        input.addEventListener("input", parse);
+        parse();
+      }
+    }
+    customElements.define("ua-parser", UaParser);
+  </script>
+</BaseLayout>

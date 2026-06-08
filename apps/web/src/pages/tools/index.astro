@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePages } from "../../lib/site-pages";
+
+const toolPages = sitePages.filter((page) => page.group === "tool" && page.path !== "/tools");
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Browser Fidelity Tools",
+  url: "https://cloakbrowser.org/tools",
+  hasPart: toolPages.map((page) => ({
+    "@type": "WebApplication",
+    name: page.title,
+    url: `https://cloakbrowser.org${page.path}`,
+    applicationCategory: "DeveloperApplication",
+    description: page.description
+  }))
+};
+---
+
+<BaseLayout
+  title="Browser Fidelity Tools | Mobile, Proxy, WebRTC, User Agent, and Playwright Checks"
+  description="Choose focused browser consistency tools for mobile fingerprint checks, timezone/IP mismatches, WebRTC candidates, user agent parsing, and Playwright presets."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Tools</span>
+    </nav>
+
+    <div class="tool-intro">
+      <p class="eyebrow">Tools</p>
+      <h1>Focused checks for browser fidelity failures.</h1>
+      <p class="subhead">
+        Start with the full scanner, then use a focused tool when the failure is
+        about mobile emulation, timezone geography, WebRTC candidates, user
+        agent parsing, or repeatable Playwright presets.
+      </p>
+    </div>
+
+    <div class="tool-grid">
+      {toolPages.map((page) => (
+        <a class="tool-card" href={page.path}>
+          <span class="eyebrow">{page.path.includes("playwright") ? "Preset" : "Diagnostic"}</span>
+          <h2>{page.title}</h2>
+          <p>{page.description}</p>
+        </a>
+      ))}
+    </div>
+
+    <article class="doc-content">
+      <h2>How to choose</h2>
+      <p>
+        Use the scanner when you need a whole-environment report. Use the focused
+        pages when you already know the failure category and need interpretation,
+        examples, and next-step remediation for a specific signal group.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

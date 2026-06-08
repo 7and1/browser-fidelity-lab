@@ -1,0 +1,377 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export const prerender = false;
+
+const { id } = Astro.params;
+---
+
+<BaseLayout
+  title={`Shared Report ${id ?? ""} | Browser Fidelity Lab`}
+  description="Short-lived Browser Fidelity Lab report with redacted stored IP data, score breakdown, signal summary, and remediation notes."
+  robots="noindex,follow"
+>
+  <section class="page-shell">
+    <div class="tool-intro">
+      <p class="eyebrow">Shared report</p>
+      <h1>Short-lived browser fidelity report</h1>
+      <p class="subhead">
+        Reports are anonymous, expire by default after seven days, and omit raw
+        IP addresses from stored report JSON.
+      </p>
+    </div>
+    <div class="panel" data-report-id={id}>
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Report id</p>
+          <h2>{id}</h2>
+        </div>
+      </div>
+      <div class="panel-body">
+        <report-viewer data-id={id} aria-live="polite" aria-busy="true"></report-viewer>
+      </div>
+    </div>
+  </section>
+  <script>
+    class ReportViewer extends HTMLElement {
+      connectedCallback() {
+        const id = this.dataset.id;
+        if (!id) return;
+        this.textContent = "Loading report...";
+        this.setAttribute("aria-busy", "true");
+        fetch(`/api/report/${id}`)
+          .then(async (response) => {
+            const body = await response.json();
+            if (!response.ok) throw new Error(body.error?.message ?? "Report unavailable.");
+            return body;
+          })
+          .then((body) => {
+            const score = body.score;
+            this.replaceChildren(
+              metaSection(body),
+              scoreGrid([
+                ["Overall", score.overall],
+                ["Device", score.breakdown.device],
+                ["Geo", score.breakdown.geo],
+                ["Leak risk", score.breakdown.leakRisk],
+                ["Automation QA", score.breakdown.automationReadiness]
+              ]),
+              fixFirstSection(body.score.mismatches),
+              signalSection(body.report),
+              actionSection(body),
+              mismatchSection(body.score.mismatches)
+            );
+          })
+          .catch((error) => {
+            const message = document.createElement("p");
+            message.className = "status-line error";
+            message.setAttribute("role", "alert");
+            message.textContent = error.message;
+            this.replaceChildren(message);
+          })
+          .finally(() => {
+            this.setAttribute("aria-busy", "false");
+          });
+      }
+    }
+
+    function metaSection(body: {
+      id: string;
+      createdAt: string;
+      expiresAt: string;
+      report: { ip?: { flags?: { unavailableReason?: string } } };
+    }) {
+      const section = document.createElement("div");
+      section.className = "report-meta";
+      const items = [
+        ["Captured", formatDate(body.createdAt)],
+        ["Expires", formatDate(body.expiresAt)],
+        ["Stored raw IP", "No. Stored report JSON is redacted."],
+        ["IP intelligence", body.report.ip?.flags?.unavailableReason ? "Unavailable" : "Available or not required"]
+      ];
+      for (const [label, value] of items) {
+        const item = document.createElement("div");
+        const strong = document.createElement("strong");
+        strong.textContent = label;
+        const span = document.createElement("span");
+        span.textContent = value;
+        item.append(strong, span);
+        section.append(item);
+      }
+      return section;
+    }
+
+    function scoreGrid(items: Array<[string, number]>) {
+      const grid = document.createElement("div");
+      grid.className = "score-grid";
+      for (const [label, value] of items) {
+        const tile = document.createElement("div");
+        tile.className = "score-tile";
+        const strong = document.createElement("strong");
+        strong.textContent = String(value);
+        const span = document.createElement("span");
+        span.textContent = label;
+        tile.append(strong, span);
+        grid.append(tile);
+      }
+      return grid;
+    }
+
+    function signalSection(report: {
+      client: {
+        userAgent: string;
+        browserName?: string;
+        deviceType?: string;
+        viewport: { width: number; height: number };
+        screen: { width: number; height: number };
+        devicePixelRatio: number;
+        touchPoints: number;
+        language?: string;
+        languages: string[];
+        timezone?: string;
+        webrtc?: { checked: boolean; candidates: string[] };
+      };
+      ip?: { countryCode?: string; asn?: string; asName?: string; timezone?: string };
+    }) {
+      const section = document.createElement("section");
+      section.className = "doc-content";
+      const heading = document.createElement("h2");
+      heading.textContent = "Key observed signals";
+      const wrap = document.createElement("div");
+      wrap.className = "table-wrap";
+      wrap.tabIndex = 0;
+      wrap.setAttribute("aria-label", "Scrollable report signal table");
+      const table = document.createElement("table");
+      table.className = "signal-table";
+      const caption = document.createElement("caption");
+      caption.className = "visually-hidden";
+      caption.textContent = "Key browser and network signals in the shared report";
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      for (const label of ["Signal", "Observed value"]) {
+        const th = document.createElement("th");
+        th.scope = "col";
+        th.textContent = label;
+        headerRow.append(th);
+      }
+      thead.append(headerRow);
+      const tbody = document.createElement("tbody");
+      const rows = [
+        ["User agent", report.client.userAgent],
+        ["Browser", report.client.browserName ?? "unknown"],
+        ["Device", report.client.deviceType ?? "unknown"],
+        ["Viewport", `${report.client.viewport.width} x ${report.client.viewport.height}`],
+        ["Screen", `${report.client.screen.width} x ${report.client.screen.height}`],
+        ["DPR", String(report.client.devicePixelRatio)],
+        ["Touch points", String(report.client.touchPoints)],
+        ["Locale", report.client.languages.join(", ") || report.client.language || "unknown"],
+        ["Timezone", report.client.timezone ?? "unknown"],
+        ["Network", `${report.ip?.countryCode ?? "unknown"} / ${report.ip?.asn ?? "unknown ASN"}`],
+        ["Network timezone", report.ip?.timezone ?? "unknown"],
+        [
+          "WebRTC",
+          report.client.webrtc?.checked
+            ? `${report.client.webrtc.candidates.length} candidate(s)`
+            : "not checked"
+        ]
+      ];
+      for (const [label, value] of rows) {
+        const row = document.createElement("tr");
+        const th = document.createElement("th");
+        th.scope = "row";
+        th.textContent = label;
+        const td = document.createElement("td");
+        td.textContent = value;
+        row.append(th, td);
+        tbody.append(row);
+      }
+      table.append(caption, thead, tbody);
+      wrap.append(table);
+      section.append(heading, wrap);
+      return section;
+    }
+
+    function actionSection(body: unknown) {
+      const section = document.createElement("div");
+      section.className = "report-actions";
+      const copyLink = document.createElement("button");
+      copyLink.className = "button primary";
+      copyLink.type = "button";
+      copyLink.textContent = "Copy report link";
+      copyLink.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(window.location.href);
+        copyLink.textContent = "Link copied";
+      });
+      const download = document.createElement("button");
+      download.className = "button secondary";
+      download.type = "button";
+      download.textContent = "Download JSON";
+      download.addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(body, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = "browser-fidelity-shared-report.json";
+        anchor.click();
+        URL.revokeObjectURL(url);
+      });
+      const copyPreset = document.createElement("button");
+      copyPreset.className = "button secondary";
+      copyPreset.type = "button";
+      copyPreset.textContent = "Copy suggested Playwright use";
+      copyPreset.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(suggestedPlaywrightUse((body as { report: BrowserReport }).report));
+        copyPreset.textContent = "Suggested config copied";
+      });
+      section.append(copyLink, download, copyPreset);
+      return section;
+    }
+
+    function fixFirstSection(items: Array<ReportMismatch>) {
+      const section = document.createElement("div");
+      section.className = "fix-first";
+      const header = document.createElement("div");
+      const eyebrow = document.createElement("p");
+      eyebrow.className = "eyebrow";
+      eyebrow.textContent = "Fix this first";
+      const heading = document.createElement("h3");
+      const ranked = rankReportMismatches(items);
+      heading.textContent = ranked[0]?.title ?? "No prioritized fixes";
+      header.append(eyebrow, heading);
+      section.append(header);
+
+      if (!ranked.length) {
+        const empty = document.createElement("div");
+        empty.className = "mismatch info";
+        const title = document.createElement("strong");
+        title.textContent = "No high-impact mismatches detected";
+        const detail = document.createElement("p");
+        detail.textContent = "The observed browser and network signals are internally coherent.";
+        empty.append(title, detail);
+        section.append(empty);
+        return section;
+      }
+
+      for (const item of ranked.slice(0, 3)) {
+        const row = document.createElement("div");
+        row.className = `mismatch ${item.severity ?? "info"}`;
+        const title = document.createElement("strong");
+        title.textContent = `${item.priority}. ${item.title}`;
+        const detail = document.createElement("p");
+        detail.textContent = remediationFor(item.category);
+        row.append(title, detail);
+        section.append(row);
+      }
+
+      return section;
+    }
+
+    function mismatchSection(items: Array<ReportMismatch>) {
+      const section = document.createElement("div");
+      section.className = "doc-content";
+      const heading = document.createElement("h2");
+      heading.textContent = "Mismatches";
+      const list = document.createElement("ul");
+      const rows = items.length
+        ? items
+        : [{ title: "No mismatches detected.", detail: "The observed browser and network signals are internally coherent." }];
+      for (const item of rows) {
+        const row = document.createElement("li");
+        const title = document.createElement("strong");
+        title.textContent = item.severity ? `[${item.severity}] ${item.title}` : item.title;
+        const detail = document.createElement("span");
+        detail.textContent = `${item.detail} ${remediationFor(item.category)}`;
+        row.append(title, document.createElement("br"), detail);
+        list.append(row);
+      }
+      section.append(heading, list);
+      return section;
+    }
+
+    interface ReportMismatch {
+      id?: string;
+      title: string;
+      detail: string;
+      severity?: string;
+      category?: string;
+      weight?: number;
+      priority?: number;
+    }
+
+    function rankReportMismatches(items: Array<ReportMismatch>) {
+      const severityRank: Record<string, number> = { critical: 0, warning: 1, info: 2 };
+      return [...items]
+        .sort((left, right) => {
+          const severityDelta = (severityRank[left.severity ?? "info"] ?? 2) - (severityRank[right.severity ?? "info"] ?? 2);
+          if (severityDelta !== 0) return severityDelta;
+          return (right.weight ?? 0) - (left.weight ?? 0);
+        })
+        .map((item, index) => ({ ...item, priority: index + 1 }));
+    }
+
+    function remediationFor(category: string | undefined) {
+      if (category === "geo" || category === "network") {
+        return "Review timezone, locale, geolocation, and network route before using this profile as regional QA evidence.";
+      }
+      if (category === "device" || category === "runtime") {
+        return "Review user agent, viewport, DPR, touch, pointer, and renderer settings in the browser or Playwright preset.";
+      }
+      if (category === "privacy") {
+        return "Review WebRTC policy and browser launch options before using this environment for network-sensitive testing.";
+      }
+      if (category === "automation") {
+        return "Review automation exposure and test-runner launch settings.";
+      }
+      return "";
+    }
+
+    interface BrowserReport {
+      client: {
+        userAgent: string;
+        viewport: { width: number; height: number };
+        screen: { width: number; height: number };
+        devicePixelRatio: number;
+        touchPoints: number;
+        deviceType?: string;
+        language?: string;
+        languages: string[];
+        timezone?: string;
+        permissions?: Record<string, string>;
+      };
+    }
+
+    function suggestedPlaywrightUse(report: BrowserReport) {
+      const primaryLocale = report.client.languages[0] ?? report.client.language ?? "en-US";
+      const isMobile = report.client.deviceType === "mobile" || report.client.deviceType === "tablet";
+      const hasTouch = report.client.touchPoints > 0 || isMobile;
+      const permissions = Object.entries(report.client.permissions ?? {})
+        .filter(([, value]) => value === "granted")
+        .map(([name]) => name);
+
+      return `use: ${JSON.stringify(
+        {
+          userAgent: report.client.userAgent,
+          viewport: report.client.viewport,
+          screen: report.client.screen,
+          deviceScaleFactor: report.client.devicePixelRatio,
+          isMobile,
+          hasTouch,
+          locale: primaryLocale,
+          timezoneId: report.client.timezone ?? "UTC",
+          permissions
+        },
+        null,
+        2
+      )}`;
+    }
+
+    function formatDate(value: string) {
+      return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(new Date(value));
+    }
+
+    customElements.define("report-viewer", ReportViewer);
+  </script>
+</BaseLayout>

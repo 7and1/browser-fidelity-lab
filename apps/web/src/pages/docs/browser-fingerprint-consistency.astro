@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "Browser Fingerprint Consistency",
+  url: "https://cloakbrowser.org/docs/browser-fingerprint-consistency",
+  description:
+    "Learn which browser, network, device, runtime, and privacy signals Browser Fidelity Lab checks and how scoring works."
+};
+---
+
+<BaseLayout
+  title="Browser Fingerprint Consistency Guide | Browser Fidelity Lab"
+  description="Learn which browser, network, device, runtime, and privacy signals Browser Fidelity Lab checks, how scoring works, and how to interpret mismatches."
+  ogType="article"
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Docs</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Docs</p>
+      <h1>Browser fingerprint consistency</h1>
+      <p class="subhead">
+        Browser fingerprint consistency means the browser-visible device,
+        runtime, network, locale, timezone, and privacy signals describe one
+        plausible QA environment.
+      </p>
+    </div>
+    <article class="doc-content">
+      <h2>Which signal groups are checked?</h2>
+      <ul>
+        <li>Device: user agent, viewport, screen, DPR, touch, pointer, and hover.</li>
+        <li>Geography: edge country, browser timezone, locale, and optional geolocation.</li>
+        <li>Runtime: WebGL, canvas, audio, storage, permissions, and webdriver state.</li>
+        <li>Network: ASN, provider, and optional proxy, VPN, Tor, relay, hosting, or mobile flags.</li>
+      </ul>
+      <h2>How does scoring work?</h2>
+      <p>
+        Scores are QA heuristics, not identity claims. Device/runtime,
+        geography/network, privacy leak risk, and automation readiness each
+        receive a score. Critical contradictions, such as mobile user agents
+        without touch support or IP country/timezone mismatches, lower the
+        relevant category.
+      </p>
+      <h2>What should be fixed first?</h2>
+      <p>
+        Fix contradictions that make a test result non-repeatable before
+        polishing low-risk differences. Network geography and timezone usually
+        come first, followed by mobile geometry, touch behavior, WebRTC
+        candidates, and automation exposure.
+      </p>
+      <h2>What are the limits?</h2>
+      <p>
+        Browser Fidelity Lab reports observable consistency. It does not identify
+        a person, certify a proxy, provide a browser binary, or make bypass
+        recommendations for systems you are not authorized to test.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

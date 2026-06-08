@@ -1,0 +1,33 @@
+{
+  "name": "browser-fidelity",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "browser-fidelity": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/make-bin-executable.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@browser-fidelity/device-presets": "workspace:*",
+    "@browser-fidelity/fidelity-core": "workspace:*",
+    "@browser-fidelity/report-renderer": "workspace:*"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.49.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "vitest": "^3.0.9"
+  }
+}

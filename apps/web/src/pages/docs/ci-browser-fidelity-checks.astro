@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "CI Browser Fidelity Checks",
+  url: "https://cloakbrowser.org/docs/ci-browser-fidelity-checks",
+  description:
+    "Run Browser Fidelity Lab presets and reports in CI so Playwright environment drift is caught before release."
+};
+---
+
+<BaseLayout
+  title="CI Browser Fidelity Checks | Browser Fidelity Lab"
+  description="Run Browser Fidelity Lab presets and reports in CI so Playwright user agent, viewport, locale, timezone, and network drift are caught before release."
+  ogType="article"
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Docs</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Docs</p>
+      <h1>CI browser fidelity checks</h1>
+      <p class="subhead">
+        Browser fidelity checks belong in CI after a preset is chosen. The goal
+        is to fail fast when user agent, viewport, DPR, locale, timezone, or
+        network assumptions drift before release.
+      </p>
+    </div>
+    <article class="doc-content">
+      <h2>What should CI prove?</h2>
+      <p>
+        CI should prove that the browser fixture still matches the preset your
+        team committed. A scan is useful during setup; a repeatable CI check is
+        what prevents silent drift across browser upgrades, proxy changes, and
+        regional test runners.
+      </p>
+      <h2>Which artifact should be committed?</h2>
+      <p>
+        Commit either the generated Playwright `use` block or the JSON preset.
+        Store it beside the test project and review changes like any other
+        production fixture.
+      </p>
+      <h2>Recommended workflow</h2>
+      <p>
+        Run a scan, fix the highest-impact mismatch first, export the matching
+        preset, then let CI fail when the audited browser drops below your score
+        threshold.
+      </p>
+      <pre class="code-box" tabindex="0" aria-label="Browser fidelity CLI threshold example"><code>{`browser-fidelity audit https://example.com \\
+  --preset desktop-chrome-us \\
+  --fail-under 90 \\
+  --json
+`}</code></pre>
+      <pre class="code-box" tabindex="0" aria-label="GitHub Actions browser fidelity example"><code>{`name: browser-fidelity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  browser-fidelity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec browser-fidelity audit "$BROWSER_FIDELITY_TARGET_URL" --preset desktop-chrome-us --fail-under 90 --json
+        env:
+          BROWSER_FIDELITY_TARGET_URL: https://example.com
+`}</code></pre>
+      <h2>When should the build fail?</h2>
+      <p>
+        Fail the build when the scan cannot run, when required metadata pages are
+        unreachable, when a required share flow fails in production QA, or when
+        the CLI score is below the selected `--fail-under` threshold. The
+        suggested Playwright config should still include core fields such as
+        user agent, viewport, device scale factor, locale, and timezone.
+      </p>
+      <h2>What should stay out of CI?</h2>
+      <p>
+        Do not commit browser cookies, personal profiles, proxy credentials, or
+        environment secrets. CI should verify observable consistency, not copy a
+        human browser session.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

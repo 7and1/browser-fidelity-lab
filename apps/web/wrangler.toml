@@ -1,0 +1,31 @@
+name = "browser-fidelity-lab"
+main = "./dist/_worker.js/scheduled-worker.js"
+compatibility_date = "2026-06-03"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+routes = [
+  { pattern = "cloakbrowser.org", custom_domain = true },
+  { pattern = "www.cloakbrowser.org", custom_domain = true }
+]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+
+[observability]
+enabled = true
+
+[triggers]
+crons = ["17 3 * * *"]
+
+[[d1_databases]]
+binding = "REPORTS"
+database_name = "browser_fidelity_reports"
+database_id = "fdd2b7d7-22d8-413c-883e-bb39aa1aab1d"
+migrations_dir = "./migrations"
+
+[vars]
+REPORT_TTL_DAYS = "7"
+REPORTS_PER_DAY = "30"

@@ -1,0 +1,59 @@
+---
+import { EnvironmentScanner } from "../../components/EnvironmentScanner";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "WebRTC Candidate Check",
+  url: "https://cloakbrowser.org/tools/webrtc-leak-test",
+  applicationCategory: "DeveloperApplication",
+  description:
+    "Run an explicit-consent WebRTC candidate check and review whether private or public network candidates appear in the browser report."
+};
+---
+
+<BaseLayout
+  title="WebRTC Candidate Check | Browser Fidelity Lab"
+  description="Run an explicit-consent WebRTC candidate check and review private or public network candidates as QA leak-risk signals."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="/tools">Tools</a>
+      <span aria-hidden="true">/</span>
+      <span>WebRTC</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Tool</p>
+      <h1>WebRTC candidate check</h1>
+      <p class="subhead">
+        Run the optional WebRTC check only after explicit consent, then review
+        whether network candidates appear in the report.
+      </p>
+    </div>
+    <EnvironmentScanner client:load />
+    <article class="doc-content">
+      <h2>What causes WebRTC candidate leaks?</h2>
+      <p>
+        WebRTC can expose ICE candidates that describe local or public network
+        routing state. Browser Fidelity Lab only runs this check after explicit
+        consent because candidates can be sensitive in some environments.
+      </p>
+      <h2>How should results be interpreted?</h2>
+      <p>
+        A private candidate is a warning that local network information was
+        visible to the page. A public candidate is higher risk for QA profiles
+        because it can contradict the intended route or proxy geography.
+      </p>
+      <h2>What should be remediated?</h2>
+      <p>
+        Review browser WebRTC policy, enterprise controls, and test runner
+        launch options before using the environment as a privacy-sensitive or
+        network-sensitive QA fixture.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

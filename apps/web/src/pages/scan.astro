@@ -1,0 +1,37 @@
+---
+import { EnvironmentScanner } from "../components/EnvironmentScanner";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Browser Environment Scanner",
+  url: "https://cloakbrowser.org/scan",
+  applicationCategory: "DeveloperApplication",
+  description:
+    "Run a local browser-visible scan, score signal consistency, and create a short-lived redacted report for QA review."
+};
+---
+
+<BaseLayout
+  title="Browser Environment Scanner | Browser Fidelity Lab"
+  description="Run a local browser-visible scan, compare IP geography, timezone, language, WebRTC, storage, and rendering signals, then share a redacted QA report."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Scan</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Scan</p>
+      <h1>Browser environment report</h1>
+      <p class="subhead">
+        Inspect client-side signals, compare geography and locale, and create a
+        short-lived report when D1 storage is configured.
+      </p>
+    </div>
+    <EnvironmentScanner client:load />
+  </section>
+</BaseLayout>

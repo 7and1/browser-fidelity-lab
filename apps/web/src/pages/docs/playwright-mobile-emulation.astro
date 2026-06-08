@@ -1,0 +1,63 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "Playwright Mobile Emulation Checklist",
+  url: "https://cloakbrowser.org/docs/playwright-mobile-emulation",
+  description:
+    "Align Playwright user agent, viewport, DPR, touch, locale, timezone, geolocation, and network settings for repeatable QA."
+};
+---
+
+<BaseLayout
+  title="Playwright Mobile Emulation Checklist | Browser Fidelity Lab"
+  description="Align Playwright user agent, viewport, DPR, touch, locale, timezone, geolocation, permissions, and network settings for repeatable mobile QA."
+  ogType="article"
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Docs</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Docs</p>
+      <h1>Playwright mobile emulation checklist</h1>
+      <p class="subhead">
+        A coherent preset should align device class, viewport, DPR, touch,
+        locale, timezone, geolocation, and the network used for the test.
+      </p>
+    </div>
+    <article class="doc-content">
+      <h2>Which Playwright fields must line up?</h2>
+      <ul>
+        <li>User agent and browser engine should describe the same platform.</li>
+        <li>Viewport, screen, and device scale factor should match the selected device class.</li>
+        <li>Mobile profiles should expose touch support and coarse pointer behavior.</li>
+        <li>Locale, timezone, and geolocation should match the intended region.</li>
+        <li>Provider-backed network flags should be treated as advisory QA signals.</li>
+      </ul>
+      <h2>How should locale, timezone, and proxy settings line up?</h2>
+      <p>
+        A regional mobile preset should keep `locale`, `timezoneId`,
+        geolocation, and the network exit in the same target region. If those
+        fields describe different countries, the test is no longer a stable
+        regional fixture.
+      </p>
+      <h2>How should this run in CI?</h2>
+      <p>
+        Keep presets in source control and run the CLI from your own runner so
+        browser sessions remain under your operational control.
+      </p>
+      <h2>What should not be automated?</h2>
+      <p>
+        Do not use presets to access systems you are not authorized to test.
+        Browser Fidelity Lab validates consistency; it does not operate a
+        browser service, proxy service, or bypass workflow.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

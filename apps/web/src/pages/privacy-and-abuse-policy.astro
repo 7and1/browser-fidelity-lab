@@ -1,0 +1,55 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Privacy and Abuse Policy",
+  url: "https://cloakbrowser.org/privacy-and-abuse-policy",
+  description:
+    "Browser Fidelity Lab data handling, short-lived report storage, raw-IP redaction, and authorized-use boundaries."
+};
+---
+
+<BaseLayout
+  title="Privacy and Abuse Policy | Browser Fidelity Lab"
+  description="Review Browser Fidelity Lab data handling, seven-day shared report expiry, raw-IP redaction, optional IP intelligence, and authorized-use boundaries."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Policy</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Policy</p>
+      <h1>Privacy and abuse policy</h1>
+      <p class="subhead">
+        Browser Fidelity Lab is built for authorized QA, diagnostics, and
+        security review. It stores minimal short-lived report data.
+      </p>
+    </div>
+    <article class="doc-content">
+      <h2>Data handling</h2>
+      <ul>
+        <li>Raw IP addresses are removed from stored report JSON.</li>
+        <li>Shared reports expire after seven days by default.</li>
+        <li>A daily salted visitor hash may be stored for basic abuse controls.</li>
+        <li>External IP intelligence is optional and only runs when provider keys are configured.</li>
+      </ul>
+      <h2>Allowed use</h2>
+      <p>
+        Use this project to test systems you own, operate, or are authorized to
+        assess. Do not use it for credential attacks, unauthorized account
+        activity, fraud, or unauthorized data collection.
+      </p>
+      <h2>Third-party boundaries</h2>
+      <p>
+        This project does not host, redistribute, embed, resell, or operate any
+        third-party browser binary for customers. Browser Fidelity Lab is an
+        independent project and is not affiliated with CloakHQ or CloakBrowser.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

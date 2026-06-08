@@ -1,0 +1,49 @@
+---
+import { EnvironmentScanner } from "../components/EnvironmentScanner";
+import { PresetGenerator } from "../components/PresetGenerator";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Browser Fidelity Lab",
+  url: "https://cloakbrowser.org/",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any",
+  description:
+    "Independent QA tools for checking whether browser, IP, locale, timezone, WebRTC, and Playwright settings describe one coherent environment."
+};
+---
+
+<BaseLayout
+  title="Browser Fidelity Lab | Browser, IP, WebRTC, and Playwright Consistency Checks"
+  description="Independent QA tools for scanning browser-visible signals, finding IP/timezone/WebRTC mismatches, and exporting repeatable Playwright presets."
+  schema={schema}
+>
+  <section class="page-shell">
+    <div class="tool-intro">
+      <p class="eyebrow">Browser Fidelity QA</p>
+      <h1>Check whether browser, network, and Playwright signals agree.</h1>
+      <p class="subhead">
+        Built for QA engineers, security reviewers, and Playwright teams that
+        need one coherent environment before a test run, audit, or CI fixture.
+      </p>
+      <div class="workflow-strip" aria-label="Browser Fidelity Lab workflow">
+        <span>1. Scan the browser</span>
+        <span>2. Review mismatches</span>
+        <span>3. Export a preset</span>
+        <span>4. Commit it to CI</span>
+      </div>
+      <p class="trust-note">
+        Browser Fidelity Lab is independent and not affiliated with CloakHQ or
+        CloakBrowser. Shared reports are redacted and short-lived; local JSON
+        downloads stay in your browser.
+      </p>
+    </div>
+
+    <EnvironmentScanner client:load />
+
+    <div class="section-spacer"></div>
+    <PresetGenerator client:visible />
+  </section>
+</BaseLayout>

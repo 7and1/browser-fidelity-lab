@@ -1,0 +1,95 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  robots?: string;
+  ogType?: "website" | "article";
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+}
+
+const {
+  title = "Browser Fidelity Lab",
+  description = "Browser, geography, language, timezone, WebRTC, and Playwright environment consistency checks.",
+  robots = "index,follow",
+  ogType = "website",
+  schema
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://cloakbrowser.org");
+const currentPath = Astro.url.pathname;
+const schemas = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Browser Fidelity Lab",
+    url: "https://cloakbrowser.org/",
+    description,
+    publisher: {
+      "@type": "Organization",
+      name: "Browser Fidelity Lab"
+    }
+  },
+  ...(Array.isArray(schema) ? schema : schema ? [schema] : [])
+];
+
+const isActive = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath === href || currentPath.startsWith(`${href}/`);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href="/favicon.svg" />
+    <meta property="og:site_name" content="Browser Fidelity Lab" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {schemas.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Main navigation">
+        <a class="brand" href="/" aria-label="Browser Fidelity Lab home">
+          <span class="brand-mark" aria-hidden="true">BFL</span>
+          <span>Browser Fidelity Lab</span>
+        </a>
+        <div class="nav-links">
+          <a href="/scan" aria-current={isActive("/scan") ? "page" : undefined}>Scan</a>
+          <a href="/tools" aria-current={isActive("/tools") ? "page" : undefined}>Tools</a>
+          <a href="/docs/browser-fingerprint-consistency" aria-current={isActive("/docs") ? "page" : undefined}>Docs</a>
+          <a href="/privacy-and-abuse-policy" aria-current={isActive("/privacy-and-abuse-policy") ? "page" : undefined}>Policy</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div>
+        <strong>Browser Fidelity Lab</strong>
+        <span>Independent project. Not affiliated with CloakHQ or CloakBrowser.</span>
+      </div>
+      <div class="footer-links">
+        <a href="/tools">All tools</a>
+        <a href="/tools/timezone-ip-mismatch-checker">Timezone/IP</a>
+        <a href="/docs/playwright-mobile-emulation">Playwright docs</a>
+        <a href="/docs/ci-browser-fidelity-checks">CI checks</a>
+        <a href="/tools/webrtc-leak-test">WebRTC check</a>
+        <a href="/privacy-and-abuse-policy">Privacy</a>
+      </div>
+    </footer>
+  </body>
+</html>

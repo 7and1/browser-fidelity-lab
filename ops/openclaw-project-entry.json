@@ -1,0 +1,26 @@
+{
+  "project": "cloakbrowser-org",
+  "enabled": true,
+  "workspace": "/Users/openclaw/test-workspace/cloakbrowser-org",
+  "default_port": 3290,
+  "port_band": {
+    "base": 3290,
+    "size": 10
+  },
+  "prepare_cmd": "pnpm install --frozen-lockfile && pnpm run ci",
+  "preview_cmd": "cd /Users/openclaw/test-workspace/cloakbrowser-org/apps/web && pnpm run preview -- --ip 127.0.0.1 --port \"$OPENCLAW_PORT\"",
+  "validation_cmd": "OPENCLAW_QA_BASE_URL=\"${OPENCLAW_TARGET_URL:-${OPENCLAW_PREVIEW_URL:-http://127.0.0.1:3290}}\" node ./scripts/openclaw-browser-qa.mjs",
+  "validation_kind": "browser",
+  "public_base_url": "https://cloakbrowser.org",
+  "browser_paths": [
+    "/",
+    "/scan",
+    "/tools",
+    "/tools/playwright-device-preset-generator",
+    "/privacy-and-abuse-policy"
+  ],
+  "health_path": "/api/health",
+  "startup_timeout_sec": 240,
+  "health_timeout_sec": 10,
+  "env": {}
+}

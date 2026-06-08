@@ -1,0 +1,66 @@
+---
+import { EnvironmentScanner } from "../../components/EnvironmentScanner";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Proxy Geo Consistency Checker",
+  url: "https://cloakbrowser.org/tools/proxy-geo-consistency-checker",
+  applicationCategory: "DeveloperApplication",
+  description:
+    "Compare edge country, ASN, timezone, locale, and optional provider network flags against browser-visible settings."
+};
+---
+
+<BaseLayout
+  title="Proxy Geo Consistency Checker | ASN, Locale, Timezone, and Network Flags"
+  description="Compare edge IP country, ASN, timezone, locale, and optional proxy/VPN intelligence with browser-visible settings for QA consistency."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="/tools">Tools</a>
+      <span aria-hidden="true">/</span>
+      <span>Proxy geo</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Tool</p>
+      <h1>Proxy and geography consistency checker</h1>
+      <p class="subhead">
+        Compare edge country, ASN, timezone, locale, and optional provider
+        network flags against browser-visible settings.
+      </p>
+    </div>
+    <EnvironmentScanner client:load />
+    <article class="doc-content">
+      <h2>What does proxy geo consistency mean?</h2>
+      <p>
+        A browser test is more repeatable when edge IP country, ASN type,
+        browser timezone, language region, and optional provider intelligence
+        tell the same story about the intended test location.
+      </p>
+      <h2>What mismatch matters most?</h2>
+      <p>
+        The highest-impact mismatch is an IP country that disagrees with the
+        browser timezone or primary language region. For example, a US edge IP
+        with `Asia/Shanghai` timezone and `zh-CN` language may invalidate a
+        region-specific QA result.
+      </p>
+      <h2>How reliable are proxy and VPN flags?</h2>
+      <p>
+        Provider flags are advisory. If no IP intelligence key is configured,
+        the scanner still reports Cloudflare edge geography and marks proxy/VPN
+        flags unavailable instead of guessing.
+      </p>
+      <h2>Next step</h2>
+      <p>
+        Align Playwright `locale`, `timezoneId`, optional `geolocation`, and the
+        network route before treating a regional browser test as production
+        evidence.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

@@ -1,0 +1,14 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@browser-fidelity/device-presets": ["../../packages/device-presets/src/index.ts"],
+      "@browser-fidelity/fidelity-core": ["../../packages/fidelity-core/src/index.ts"],
+      "@browser-fidelity/report-renderer": ["../../packages/report-renderer/src/index.ts"]
+    },
+    "strict": true,
+    "jsx": "react-jsx"
+  },
+  "include": [".astro/types.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.astro"]
+}

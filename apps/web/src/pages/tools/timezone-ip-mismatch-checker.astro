@@ -1,0 +1,65 @@
+---
+import { EnvironmentScanner } from "../../components/EnvironmentScanner";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Timezone IP Mismatch Checker",
+  url: "https://cloakbrowser.org/tools/timezone-ip-mismatch-checker",
+  applicationCategory: "DeveloperApplication",
+  description:
+    "Detect mismatches between browser timezone, primary language region, and edge IP country for QA browser presets."
+};
+---
+
+<BaseLayout
+  title="Timezone IP Mismatch Checker | Browser Fidelity Lab"
+  description="Detect mismatches between browser timezone, language region, and edge IP country before using a browser profile for regional QA."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="/tools">Tools</a>
+      <span aria-hidden="true">/</span>
+      <span>Timezone IP mismatch</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Tool</p>
+      <h1>Timezone and IP mismatch checker</h1>
+      <p class="subhead">
+        Compare browser timezone, primary language region, and edge IP country
+        to catch inconsistent QA presets.
+      </p>
+    </div>
+    <EnvironmentScanner client:load />
+    <article class="doc-content">
+      <h2>How do you detect a timezone/IP mismatch?</h2>
+      <p>
+        Compare the browser timezone returned by `Intl.DateTimeFormat`, the
+        primary language region, and Cloudflare edge IP country. A mismatch
+        appears when those signals point to different regions.
+      </p>
+      <h2>Why does this matter for Playwright?</h2>
+      <p>
+        Playwright can set `locale`, `timezoneId`, and geolocation independently.
+        If the network path is in a different country, region-sensitive tests
+        may pass locally but fail in production-like traffic.
+      </p>
+      <h2>What should be fixed first?</h2>
+      <p>
+        Fix the network route and timezone first, then align locale and
+        geolocation. Browser-level language settings are less useful if the edge
+        country and timezone already contradict each other.
+      </p>
+      <h2>Limitations</h2>
+      <p>
+        Multi-country timezones, travel scenarios, corporate networks, and VPN
+        exits can be legitimate. Use the mismatch as a QA review trigger, not as
+        a user classification decision.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

@@ -1,0 +1,33 @@
+{
+  "name": "@browser-fidelity/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node ../../scripts/write-cloudflare-scheduled-wrapper.mjs",
+    "preview": "wrangler dev dist/_worker.js/scheduled-worker.js --assets dist --test-scheduled",
+    "deploy": "wrangler deploy",
+    "typecheck": "astro check",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.0",
+    "@astrojs/react": "^4.2.1",
+    "@browser-fidelity/device-presets": "workspace:*",
+    "@browser-fidelity/fidelity-core": "workspace:*",
+    "@browser-fidelity/report-renderer": "workspace:*",
+    "astro": "^5.5.5",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9",
+    "wrangler": "^4.6.0"
+  }
+}

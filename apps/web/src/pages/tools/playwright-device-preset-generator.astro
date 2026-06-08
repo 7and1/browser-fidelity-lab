@@ -1,0 +1,60 @@
+---
+import { PresetGenerator } from "../../components/PresetGenerator";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Playwright Device Preset Generator",
+  url: "https://cloakbrowser.org/tools/playwright-device-preset-generator",
+  applicationCategory: "DeveloperApplication",
+  description:
+    "Export deterministic Playwright device, locale, timezone, viewport, DPR, permission, JSON, and CI recipe snippets."
+};
+---
+
+<BaseLayout
+  title="Playwright Device Preset Generator | Browser Fidelity Lab"
+  description="Generate deterministic Playwright config, Node, Python, JSON, and CI recipe snippets for coherent browser device presets."
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="/tools">Tools</a>
+      <span aria-hidden="true">/</span>
+      <span>Playwright presets</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Tool</p>
+      <h1>Playwright device preset generator</h1>
+      <p class="subhead">
+        Export coherent device, locale, timezone, viewport, DPR, and permission
+        settings for Playwright test projects.
+      </p>
+    </div>
+    <PresetGenerator client:load />
+    <article class="doc-content">
+      <h2>What does a coherent Playwright preset include?</h2>
+      <p>
+        A useful preset keeps user agent, viewport, screen, device scale factor,
+        touch support, locale, timezone, permissions, and optional geolocation
+        aligned. Browser Fidelity Lab exports those fields as committed test
+        fixtures rather than one-off local settings.
+      </p>
+      <h2>How should this be used in CI?</h2>
+      <p>
+        Commit the generated JSON or Playwright project config, then run the CLI
+        with the generated CI recipe and score threshold before a release. That
+        catches drift when browser versions, network regions, or locale defaults
+        change.
+      </p>
+      <h2>What is not included?</h2>
+      <p>
+        Presets do not provide a browser binary, proxy account, or bypass logic.
+        They only describe consistent settings for authorized browser testing.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

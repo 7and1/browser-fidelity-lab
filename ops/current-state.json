@@ -1,0 +1,63 @@
+{
+  "project": "browser-fidelity-lab",
+  "domain": "cloakbrowser.org",
+  "updated_at": "2026-06-06T12:46:16Z",
+  "production_status": "blocked",
+  "source_status": "launch-hardened",
+  "runtime_target": "Cloudflare Workers static assets plus API routes",
+  "storage_target": "Cloudflare D1 binding REPORTS",
+  "validation_entrypoints": {
+    "open_source": "pnpm check:open-source",
+    "ci": "pnpm run ci",
+    "launch": "pnpm check:launch",
+    "deploy": "./deploy.sh",
+    "production_smoke": "pnpm smoke:production",
+    "browser_qa": "pnpm qa:browser"
+  },
+  "current_blockers": [
+    {
+      "name": "D1 database id placeholder",
+      "status": "blocked",
+      "detail": "apps/web/wrangler.toml still contains replace-with-cloudflare-d1-database-id."
+    },
+    {
+      "name": "Worker secret not proven",
+      "status": "blocked",
+      "detail": "REPORT_HASH_SECRET is required as a Cloudflare Worker secret before shared report creation can be production-ready."
+    },
+    {
+      "name": "Cloudflare deploy auth not proven",
+      "status": "blocked",
+      "detail": "No Cloudflare API auth path was proven in the current shell."
+    },
+    {
+      "name": "Public DNS and HTTPS not production-ready",
+      "status": "blocked",
+      "detail": "On 2026-06-06, local DNS returned 198.18.6.152, public resolvers returned 185.53.179.146, and HTTPS checks timed out from this control plane."
+    }
+  ],
+  "last_observed_dns": {
+    "observed_at": "2026-06-06T12:39:58Z",
+    "local_a": ["198.18.6.152"],
+    "public_a": ["185.53.179.146"]
+  },
+  "last_public_http": {
+    "observed_at": "2026-06-06T12:39:58Z",
+    "https_root": "timeout",
+    "https_api_health": "timeout"
+  },
+  "last_validation": {
+    "observed_at": "2026-06-06T12:45:54Z",
+    "environment": "OpenClaw",
+    "command": "pnpm run ci",
+    "status": "pass",
+    "artifact_dir": "/Users/openclaw/artifacts/cloakbrowser-org/exec/20260606T124554Z",
+    "notes": [
+      "content policy passed",
+      "open-source readiness passed",
+      "typecheck passed with Astro hints only",
+      "23 tests passed",
+      "build passed and scheduled Worker wrapper was generated"
+    ]
+  }
+}
