@@ -20,27 +20,71 @@ const schema = {
   description="Independent QA tools for scanning browser-visible signals, finding IP/timezone/WebRTC mismatches, and exporting repeatable Playwright presets."
   schema={schema}
 >
-  <section class="page-shell">
-    <div class="tool-intro">
-      <p class="eyebrow">Browser Fidelity QA</p>
-      <h1>Check whether browser, network, and Playwright signals agree.</h1>
-      <p class="subhead">
-        Built for QA engineers, security reviewers, and Playwright teams that
-        need one coherent environment before a test run, audit, or CI fixture.
-      </p>
-      <div class="workflow-strip" aria-label="Browser Fidelity Lab workflow">
-        <span>1. Scan the browser</span>
-        <span>2. Review mismatches</span>
-        <span>3. Export a preset</span>
-        <span>4. Commit it to CI</span>
+  <section class="page-shell home-shell">
+    <section class="hero-cockpit" aria-labelledby="home-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Authorized QA command surface</p>
+        <h1 id="home-title">Browser Fidelity Lab</h1>
+        <p class="hero-kicker">
+          Find the browser signal that will break a Playwright run before it
+          reaches CI.
+        </p>
+        <p class="subhead">
+          Scan browser-visible state, rank the first fix, export a coherent
+          preset, and keep the same profile under threshold checks.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#scanner">Run scan</a>
+          <a class="button secondary" href="/docs/ci-browser-fidelity-checks">CI recipe</a>
+        </div>
+        <div class="workflow-strip command-flow" aria-label="Browser Fidelity Lab workflow">
+          <span>Scan</span>
+          <span>Fix first</span>
+          <span>Export preset</span>
+          <span>Fail CI below score</span>
+        </div>
       </div>
-      <p class="trust-note">
-        Browser Fidelity Lab is independent and not affiliated with CloakHQ or
-        CloakBrowser. Shared reports are redacted and short-lived; local JSON
-        downloads stay in your browser.
-      </p>
-    </div>
 
+      <div class="signal-console" aria-label="Example browser fidelity run">
+        <div class="console-head">
+          <span class="console-dot"></span>
+          <strong>qa-run.browser-fidelity</strong>
+          <code>score >= 90</code>
+        </div>
+        <div class="console-score">
+          <span>87</span>
+          <div>
+            <strong>Fix this first</strong>
+            <p>Timezone and egress region disagree.</p>
+          </div>
+        </div>
+        <dl class="console-grid">
+          <div>
+            <dt>Locale</dt>
+            <dd>en-US</dd>
+          </div>
+          <div>
+            <dt>Timezone</dt>
+            <dd>America/New_York</dd>
+          </div>
+          <div>
+            <dt>Network</dt>
+            <dd>GB / ASN</dd>
+          </div>
+          <div>
+            <dt>CI</dt>
+            <dd>fail-under 90</dd>
+          </div>
+        </dl>
+        <pre><code>{`use: {
+  locale: "en-US",
+  timezoneId: "America/New_York",
+  hasTouch: false
+}`}</code></pre>
+      </div>
+    </section>
+
+    <div id="scanner"></div>
     <EnvironmentScanner client:load />
 
     <div class="section-spacer"></div>

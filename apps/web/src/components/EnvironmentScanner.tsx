@@ -158,8 +158,8 @@ export function EnvironmentScanner() {
   }
 
   return (
-    <section className="grid-two" aria-label="Browser environment scanner">
-      <div className="panel" aria-busy={state === "running" || sharePending}>
+    <section className="grid-two scanner-workbench" aria-label="Browser environment scanner">
+      <div className="panel scan-panel" aria-busy={state === "running" || sharePending}>
         <div className="panel-header">
           <div>
             <p className="eyebrow">Live scan</p>
@@ -252,7 +252,7 @@ export function EnvironmentScanner() {
         </div>
       </div>
 
-      <aside className="panel" aria-label="Score summary">
+      <aside className="panel score-panel" aria-label="Score summary">
         <div className="panel-header">
           <div>
             <p className="eyebrow">Score</p>

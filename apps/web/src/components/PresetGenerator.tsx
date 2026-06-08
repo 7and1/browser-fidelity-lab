@@ -39,8 +39,8 @@ export function PresetGenerator() {
   }
 
   return (
-    <section className="grid-two" aria-label="Playwright preset generator">
-      <div className="panel">
+    <section className="grid-two preset-workbench" aria-label="Playwright preset generator">
+      <div className="panel preset-panel">
         <div className="panel-header">
           <div>
             <p className="eyebrow">Preset generator</p>
@@ -107,7 +107,7 @@ export function PresetGenerator() {
         </div>
       </div>
 
-      <div className="panel">
+      <div className="panel export-panel">
         <div className="panel-header">
           <div className="button-row" aria-label="Export format">
             <button className="button secondary" type="button" onClick={() => setTab("config")} aria-pressed={tab === "config"}>
