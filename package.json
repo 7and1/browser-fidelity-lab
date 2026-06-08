@@ -14,7 +14,7 @@
     "check:launch": "node scripts/check-launch-readiness.mjs --public",
     "qa:browser": "node scripts/openclaw-browser-qa.mjs",
     "smoke:production": "node scripts/smoke-production.mjs",
-    "ci": "pnpm lint:content && pnpm check:open-source && pnpm typecheck && pnpm test && pnpm build"
+    "ci": "pnpm lint:content && pnpm check:open-source && pnpm typecheck && pnpm build && pnpm test"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",
