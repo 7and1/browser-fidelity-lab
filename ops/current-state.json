@@ -1,9 +1,9 @@
 {
   "project": "browser-fidelity-lab",
   "domain": "cloakbrowser.org",
-  "updated_at": "2026-06-06T12:46:16Z",
-  "production_status": "blocked",
-  "source_status": "launch-hardened",
+  "updated_at": "2026-06-08T10:44:00Z",
+  "production_status": "workers_dev_live_domain_blocked",
+  "source_status": "ci-passing-deployed",
   "runtime_target": "Cloudflare Workers static assets plus API routes",
   "storage_target": "Cloudflare D1 binding REPORTS",
   "validation_entrypoints": {
@@ -14,50 +14,89 @@
     "production_smoke": "pnpm smoke:production",
     "browser_qa": "pnpm qa:browser"
   },
+  "deployment": {
+    "github_repo": "https://github.com/7and1/browser-fidelity-lab",
+    "branch": "main",
+    "head_sha": "94b01cb9cac344c6f17cfd1b899a57e0f8e52bb2",
+    "worker_url": "https://browser-fidelity-lab.9c8e1a84.workers.dev",
+    "cloudflare_zone": {
+      "id": "ebe2110551c773088c76f181b96b2c20",
+      "status": "pending",
+      "required_name_servers": ["raegan.ns.cloudflare.com", "simon.ns.cloudflare.com"],
+      "current_public_name_servers": ["ns1.dyna-ns.net", "ns2.dyna-ns.net"]
+    },
+    "d1_database": {
+      "name": "browser_fidelity_reports",
+      "id": "fdd2b7d7-22d8-413c-883e-bb39aa1aab1d",
+      "ready": true
+    },
+    "github_actions": {
+      "ci_run_id": "27131836333",
+      "deploy_run_id": "27131836368",
+      "deploy_conclusion": "success",
+      "deploy_completed_at": "2026-06-08T10:35:14Z"
+    }
+  },
   "current_blockers": [
     {
-      "name": "D1 database id placeholder",
+      "name": "Registrar nameserver delegation",
       "status": "blocked",
-      "detail": "apps/web/wrangler.toml still contains replace-with-cloudflare-d1-database-id."
-    },
-    {
-      "name": "Worker secret not proven",
-      "status": "blocked",
-      "detail": "REPORT_HASH_SECRET is required as a Cloudflare Worker secret before shared report creation can be production-ready."
-    },
-    {
-      "name": "Cloudflare deploy auth not proven",
-      "status": "blocked",
-      "detail": "No Cloudflare API auth path was proven in the current shell."
-    },
-    {
-      "name": "Public DNS and HTTPS not production-ready",
-      "status": "blocked",
-      "detail": "On 2026-06-06, local DNS returned 198.18.6.152, public resolvers returned 185.53.179.146, and HTTPS checks timed out from this control plane."
+      "detail": "cloakbrowser.org is still delegated to ns1.dyna-ns.net/ns2.dyna-ns.net. Switch registrar nameservers to raegan.ns.cloudflare.com and simon.ns.cloudflare.com, then rerun production smoke on https://cloakbrowser.org."
     }
   ],
   "last_observed_dns": {
-    "observed_at": "2026-06-06T12:39:58Z",
-    "local_a": ["198.18.6.152"],
-    "public_a": ["185.53.179.146"]
+    "observed_at": "2026-06-08T10:37:20Z",
+    "public_a": ["185.53.179.146"],
+    "public_ns": ["ns1.dyna-ns.net", "ns2.dyna-ns.net"]
   },
   "last_public_http": {
-    "observed_at": "2026-06-06T12:39:58Z",
-    "https_root": "timeout",
-    "https_api_health": "timeout"
+    "observed_at": "2026-06-08T10:37:20Z",
+    "workers_dev_api_health": 200,
+    "workers_dev_api_ready": 200,
+    "cloakbrowser_https_root": "timeout"
   },
   "last_validation": {
-    "observed_at": "2026-06-06T12:45:54Z",
-    "environment": "OpenClaw",
-    "command": "pnpm run ci",
-    "status": "pass",
-    "artifact_dir": "/Users/openclaw/artifacts/cloakbrowser-org/exec/20260606T124554Z",
-    "notes": [
-      "content policy passed",
-      "open-source readiness passed",
-      "typecheck passed with Astro hints only",
-      "23 tests passed",
-      "build passed and scheduled Worker wrapper was generated"
+    "observed_at": "2026-06-08T10:43:00Z",
+    "status": "pass_with_browser_qa_environment_blocked",
+    "checks": [
+      {
+        "environment": "GitHub Actions",
+        "command": "pnpm run ci",
+        "status": "pass",
+        "run_id": "27131836333"
+      },
+      {
+        "environment": "GitHub Actions",
+        "command": "wrangler d1 migrations apply && wrangler deploy && wrangler secret put REPORT_HASH_SECRET && wrangler deploy",
+        "status": "pass",
+        "run_id": "27131836368"
+      },
+      {
+        "environment": "local control plane",
+        "command": "manual workers.dev production smoke",
+        "status": "pass",
+        "paths": [
+          "/",
+          "/scan",
+          "/tools",
+          "/tools/playwright-device-preset-generator",
+          "/robots.txt",
+          "/sitemap-index.xml",
+          "/sitemap.xml",
+          "/api/health",
+          "/api/ready",
+          "/api/ip",
+          "/api/report",
+          "/api/report/{id}"
+        ]
+      },
+      {
+        "environment": "OpenClaw",
+        "command": "OPENCLAW_QA_BASE_URL=https://browser-fidelity-lab.9c8e1a84.workers.dev CLOAKBROWSER_QA_REQUIRE_SHARE=1 node ./scripts/openclaw-browser-qa.mjs",
+        "status": "environment-blocked",
+        "artifact_dir": "/Users/openclaw/artifacts/cloakbrowser-org/20260608-103944",
+        "error": "Playwright Chromium executable missing at /Users/openclaw/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-arm64/chrome-headless-shell."
+      }
     ]
   }
 }
