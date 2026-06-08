@@ -1,13 +1,10 @@
-# Browser Fidelity Lab
+# Cloak Browser
 
-Browser Fidelity Lab is an open-source QA surface for checking whether browser,
-mobile, locale, timezone, IP geography, WebRTC, and Playwright settings describe
-one coherent environment.
+Cloak Browser is an open-source QA surface for checking whether browser, mobile,
+locale, timezone, IP geography, WebRTC, and Playwright settings describe one
+coherent environment.
 
-The public site can use `cloakbrowser.org`, but the product name is **Browser
-Fidelity Lab**.
-
-Independent project. Not affiliated with CloakHQ or CloakBrowser.
+The public site and product name are **Cloak Browser**.
 
 ## What It Does
 
@@ -95,6 +92,17 @@ Before a direct deploy, verify the active Cloudflare identity:
 
 ```bash
 pnpm wrangler whoami
+```
+
+Operator credentials may live outside the public repo in `../local.env.txt`.
+That file is not a shell env file and must not be committed or printed. It may
+contain a Cloudflare token as a copied header line:
+`Authorization: Bearer ...`, plus a `GITHUB_TOKEN=...` line for GitHub pushes or
+workflow dispatch. Extract values into the deploy shell without echoing them:
+
+```bash
+export CLOUDFLARE_API_TOKEN="$(awk '/Authorization: Bearer /{sub(/^.*Authorization: Bearer /, ""); gsub(/[\"[:space:]]/, ""); print; exit}' ../local.env.txt)"
+export GITHUB_TOKEN="$(awk '/^GITHUB_TOKEN=/{sub(/^GITHUB_TOKEN=/, ""); print; exit}' ../local.env.txt)"
 ```
 
 The production deployment entrypoint is:

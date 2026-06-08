@@ -57,7 +57,7 @@ if (packageJson) {
 const readme = readText("README.md");
 if (readme) {
   check("readme:scope", readme.includes("What It Does Not Do"), "README states non-goals and authorized-use boundary");
-  check("readme:affiliation", /not affiliated with CloakHQ or CloakBrowser/i.test(readme), "README carries affiliation disclaimer");
+  check("readme:brand", readme.includes("Cloak Browser"), "README carries the Cloak Browser brand name");
   check("readme:production-acceptance", readme.includes("Production Acceptance"), "README documents production acceptance gates");
 }
 

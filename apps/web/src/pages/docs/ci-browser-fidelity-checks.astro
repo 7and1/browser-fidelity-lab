@@ -4,16 +4,16 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const schema = {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  headline: "CI Browser Fidelity Checks",
+  headline: "CI Browser Consistency Checks",
   url: "https://cloakbrowser.org/docs/ci-browser-fidelity-checks",
   description:
-    "Run Browser Fidelity Lab presets and reports in CI so Playwright environment drift is caught before release."
+    "Run Cloak Browser presets and reports in CI so Playwright environment drift is caught before release."
 };
 ---
 
 <BaseLayout
-  title="CI Browser Fidelity Checks | Browser Fidelity Lab"
-  description="Run Browser Fidelity Lab presets and reports in CI so Playwright user agent, viewport, locale, timezone, and network drift are caught before release."
+  title="CI Browser Consistency Checks | Cloak Browser"
+  description="Run Cloak Browser presets and reports in CI so Playwright user agent, viewport, locale, timezone, and network drift are caught before release."
   ogType="article"
   schema={schema}
 >
@@ -25,11 +25,11 @@ const schema = {
     </nav>
     <div class="tool-intro">
       <p class="eyebrow">Docs</p>
-      <h1>CI browser fidelity checks</h1>
+      <h1>CI browser consistency checks</h1>
       <p class="subhead">
-        Browser fidelity checks belong in CI after a preset is chosen. The goal
-        is to fail fast when user agent, viewport, DPR, locale, timezone, or
-        network assumptions drift before release.
+        Browser consistency checks belong in CI after a preset is chosen. The
+        goal is to fail fast when user agent, viewport, DPR, locale, timezone,
+        or network assumptions drift before release.
       </p>
     </div>
     <article class="doc-content">
@@ -59,7 +59,7 @@ const schema = {
   --fail-under 90 \\
   --json
 `}</code></pre>
-      <pre class="code-box" tabindex="0" aria-label="GitHub Actions browser fidelity example"><code>{`name: browser-fidelity
+      <pre class="code-box" tabindex="0" aria-label="GitHub Actions browser consistency example"><code>{`name: browser-fidelity
 
 on:
   pull_request:

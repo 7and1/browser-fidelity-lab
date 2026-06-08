@@ -1,7 +1,7 @@
 # Roadmap
 
-Browser Fidelity Lab is focused on authorized QA workflows for browser,
-network, locale, timezone, WebRTC, and Playwright consistency.
+Cloak Browser is focused on authorized QA workflows for browser, network,
+locale, timezone, WebRTC, and Playwright consistency.
 
 ## v1 Priorities
 

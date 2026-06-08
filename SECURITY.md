@@ -20,9 +20,9 @@ third-party credentials in a report.
 
 ## Security Boundaries
 
-Browser Fidelity Lab is designed for authorized QA and environment consistency
-checks. It is not intended to bypass authentication, CAPTCHA, bot controls,
-fraud systems, or any system you are not authorized to test.
+Cloak Browser is designed for authorized QA and environment consistency checks.
+It is not intended to bypass authentication, CAPTCHA, bot controls, fraud
+systems, or any system you are not authorized to test.
 
 Production report storage follows these rules:
 

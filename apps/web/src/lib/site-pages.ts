@@ -10,8 +10,8 @@ export interface SitePage {
 export const sitePages: SitePage[] = [
   {
     path: "/",
-    title: "Browser Fidelity Lab",
-    description: "Independent QA tools for checking browser, IP, locale, timezone, WebRTC, and Playwright consistency.",
+    title: "Cloak Browser",
+    description: "Browser consistency tools for checking browser, IP, locale, timezone, WebRTC, and Playwright profiles.",
     group: "core",
     changefreq: "weekly",
     priority: "1.0"
@@ -26,7 +26,7 @@ export const sitePages: SitePage[] = [
   },
   {
     path: "/tools",
-    title: "Browser Fidelity Tools",
+    title: "Cloak Browser Tools",
     description: "Choose focused browser consistency tools for mobile fingerprint checks, timezone/IP mismatches, WebRTC candidates, and Playwright presets.",
     group: "tool",
     changefreq: "weekly",
@@ -67,7 +67,7 @@ export const sitePages: SitePage[] = [
   {
     path: "/tools/user-agent-parser",
     title: "User Agent Parser",
-    description: "Parse browser, operating system, and device class from a user agent string using Browser Fidelity Lab heuristics.",
+    description: "Parse browser, operating system, and device class from a user agent string using Cloak Browser heuristics.",
     group: "tool",
     changefreq: "monthly",
     priority: "0.7"
@@ -83,7 +83,7 @@ export const sitePages: SitePage[] = [
   {
     path: "/docs/browser-fingerprint-consistency",
     title: "Browser Fingerprint Consistency Guide",
-    description: "Learn which browser, network, device, runtime, and privacy signals Browser Fidelity Lab checks and how scoring works.",
+    description: "Learn which browser, network, device, runtime, and privacy signals Cloak Browser checks and how scoring works.",
     group: "doc",
     changefreq: "monthly",
     priority: "0.7"
@@ -98,8 +98,8 @@ export const sitePages: SitePage[] = [
   },
   {
     path: "/docs/ci-browser-fidelity-checks",
-    title: "CI Browser Fidelity Checks",
-    description: "Run Browser Fidelity Lab presets and reports in CI so Playwright environment drift is caught before release.",
+    title: "CI Browser Consistency Checks",
+    description: "Run Cloak Browser presets and reports in CI so Playwright environment drift is caught before release.",
     group: "doc",
     changefreq: "monthly",
     priority: "0.7"
@@ -107,7 +107,7 @@ export const sitePages: SitePage[] = [
   {
     path: "/privacy-and-abuse-policy",
     title: "Privacy and Abuse Policy",
-    description: "Review Browser Fidelity Lab data handling, short-lived report storage, raw-IP redaction, and authorized-use boundaries.",
+    description: "Review Cloak Browser data handling, short-lived report storage, raw-IP redaction, and authorized-use boundaries.",
     group: "policy",
     changefreq: "monthly",
     priority: "0.5"

@@ -1,4 +1,4 @@
-# Browser Fidelity Lab API Contract
+# Cloak Browser API Contract
 
 Base URL: `https://cloakbrowser.org`
 

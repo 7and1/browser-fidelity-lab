@@ -96,7 +96,7 @@ async function checkReportLifecycle() {
   const page = await fetchWithTimeout(new URL(pagePath, baseUrl));
   const pageHtml = await page.text();
   assert(page.ok, `${pagePath} expected 2xx, got ${page.status}`);
-  assert(pageHtml.includes("Short-lived browser fidelity report"), `${pagePath} did not render the shared report page`);
+  assert(pageHtml.includes("Short-lived Cloak Browser report"), `${pagePath} did not render the shared report page`);
   assert(!pageHtml.includes("Page not found"), `${pagePath} rendered the 404 page`);
 
   checks.push({ path: "/api/report", status: create.status, ok: true });

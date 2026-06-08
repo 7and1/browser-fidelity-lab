@@ -495,7 +495,7 @@ async function collectCanvas() {
     ctx.fillRect(0, 0, 240, 80);
     ctx.fillStyle = "#ffffff";
     ctx.font = "18px sans-serif";
-    ctx.fillText("Browser Fidelity Lab", 14, 44);
+    ctx.fillText("Cloak Browser", 14, 44);
     return { supported: true, sampleHash: await hashText(canvas.toDataURL()) };
   } catch {
     return { supported: false };

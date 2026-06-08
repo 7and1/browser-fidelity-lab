@@ -1,8 +1,8 @@
 # Contributing
 
-Browser Fidelity Lab is an open-source QA tool for validating whether browser,
-network, locale, timezone, WebRTC, and Playwright settings describe a coherent
-test environment.
+Cloak Browser is an open-source QA tool for validating whether browser, network,
+locale, timezone, WebRTC, and Playwright settings describe a coherent test
+environment.
 
 ## Development Setup
 

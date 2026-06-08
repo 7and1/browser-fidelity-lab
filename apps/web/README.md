@@ -1,4 +1,4 @@
-# Browser Fidelity Lab Web App
+# Cloak Browser Web App
 
 Astro + React islands deployed to Cloudflare Workers with static assets and API
 routes.

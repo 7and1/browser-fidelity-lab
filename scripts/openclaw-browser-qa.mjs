@@ -49,7 +49,7 @@ async function checkViewport(name, contextOptions) {
   const page = await context.newPage();
 
   await page.goto(new URL("/", baseUrl).href, { waitUntil: "networkidle" });
-  await expectVisible(page, "text=Browser Fidelity Lab");
+  await expectVisible(page, "text=Cloak Browser");
   await expectVisible(page, "text=Start scan");
   await assertNoHorizontalOverflow(page, `${name}: home`);
 
@@ -61,7 +61,7 @@ async function checkViewport(name, contextOptions) {
   assert(suggestedConfig?.includes("userAgent"), `${name}: suggested config missing userAgent`);
 
   await page.goto(new URL("/tools", baseUrl).href, { waitUntil: "networkidle" });
-  await expectVisible(page, "text=Focused checks for browser fidelity failures");
+  await expectVisible(page, "text=Focused checks for browser consistency failures");
   await assertNoHorizontalOverflow(page, `${name}: tools`);
 
   await page.goto(new URL("/tools/playwright-device-preset-generator", baseUrl).href, { waitUntil: "networkidle" });

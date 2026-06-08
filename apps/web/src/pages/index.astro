@@ -6,38 +6,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 const schema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Browser Fidelity Lab",
+  name: "Cloak Browser",
   url: "https://cloakbrowser.org/",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Any",
   description:
-    "Independent QA tools for checking whether browser, IP, locale, timezone, WebRTC, and Playwright settings describe one coherent environment."
+    "QA tools for checking whether browser, IP, locale, timezone, WebRTC, and Playwright settings describe one coherent environment."
 };
 ---
 
 <BaseLayout
-  title="Browser Fidelity Lab | Browser, IP, WebRTC, and Playwright Consistency Checks"
-  description="Independent QA tools for scanning browser-visible signals, finding IP/timezone/WebRTC mismatches, and exporting repeatable Playwright presets."
+  title="Cloak Browser | Browser Consistency Checks for QA Profiles"
+  description="Scan browser-visible signals, find IP/timezone/WebRTC mismatches, and export Playwright presets for repeatable QA."
   schema={schema}
 >
   <section class="page-shell home-shell">
     <section class="hero-cockpit" aria-labelledby="home-title">
       <div class="hero-copy">
-        <p class="eyebrow">Authorized QA command surface</p>
-        <h1 id="home-title">Browser Fidelity Lab</h1>
+        <p class="eyebrow">Browser consistency workspace</p>
+        <h1 id="home-title">Cloak Browser</h1>
         <p class="hero-kicker">
-          Find the browser signal that will break a Playwright run before it
-          reaches CI.
+          Catch profile drift before it breaks a browser test, report, or CI
+          run.
         </p>
         <p class="subhead">
-          Scan browser-visible state, rank the first fix, export a coherent
-          preset, and keep the same profile under threshold checks.
+          Scan browser-visible state, compare IP, locale, timezone, WebRTC, and
+          runtime signals, then export a coherent Playwright preset.
         </p>
         <div class="hero-actions">
           <a class="button primary" href="#scanner">Run scan</a>
           <a class="button secondary" href="/docs/ci-browser-fidelity-checks">CI recipe</a>
         </div>
-        <div class="workflow-strip command-flow" aria-label="Browser Fidelity Lab workflow">
+        <div class="workflow-strip command-flow" aria-label="Cloak Browser workflow">
           <span>Scan</span>
           <span>Fix first</span>
           <span>Export preset</span>
@@ -45,10 +45,10 @@ const schema = {
         </div>
       </div>
 
-      <div class="signal-console" aria-label="Example browser fidelity run">
+      <div class="signal-console" aria-label="Example Cloak Browser run">
         <div class="console-head">
           <span class="console-dot"></span>
-          <strong>qa-run.browser-fidelity</strong>
+          <strong>qa-run.cloak-browser</strong>
           <code>score >= 90</code>
         </div>
         <div class="console-score">

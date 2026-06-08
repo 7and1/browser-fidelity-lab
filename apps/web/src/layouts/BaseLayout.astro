@@ -10,8 +10,8 @@ interface Props {
 }
 
 const {
-  title = "Browser Fidelity Lab",
-  description = "Browser, geography, language, timezone, WebRTC, and Playwright environment consistency checks.",
+  title = "Cloak Browser",
+  description = "Browser consistency checks for QA profiles, Playwright presets, WebRTC, timezone, locale, and network drift.",
   robots = "index,follow",
   ogType = "website",
   schema
@@ -23,12 +23,12 @@ const schemas = [
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Browser Fidelity Lab",
+    name: "Cloak Browser",
     url: "https://cloakbrowser.org/",
     description,
     publisher: {
       "@type": "Organization",
-      name: "Browser Fidelity Lab"
+      name: "Cloak Browser"
     }
   },
   ...(Array.isArray(schema) ? schema : schema ? [schema] : [])
@@ -48,7 +48,7 @@ const isActive = (href: string) =>
     <meta name="robots" content={robots} />
     <link rel="canonical" href={canonical.href} />
     <link rel="icon" href="/favicon.svg" />
-    <meta property="og:site_name" content="Browser Fidelity Lab" />
+    <meta property="og:site_name" content="Cloak Browser" />
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -62,9 +62,9 @@ const isActive = (href: string) =>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <nav class="nav-shell" aria-label="Main navigation">
-        <a class="brand" href="/" aria-label="Browser Fidelity Lab home">
-          <span class="brand-mark" aria-hidden="true">BF</span>
-          <span>Browser Fidelity Lab</span>
+        <a class="brand" href="/" aria-label="Cloak Browser home">
+          <span class="brand-mark" aria-hidden="true">CB</span>
+          <span>Cloak Browser</span>
         </a>
         <div class="nav-links">
           <a href="/scan" aria-current={isActive("/scan") ? "page" : undefined}>Scan</a>
@@ -79,8 +79,8 @@ const isActive = (href: string) =>
     </main>
     <footer class="site-footer">
       <div>
-        <strong>Browser Fidelity Lab</strong>
-        <span>Independent project. Not affiliated with CloakHQ or CloakBrowser.</span>
+        <strong>Cloak Browser</strong>
+        <span>Browser consistency tools for authorized QA, security review, and Playwright environments.</span>
       </div>
       <div class="footer-links">
         <a href="/tools">All tools</a>

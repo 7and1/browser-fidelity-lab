@@ -2,8 +2,8 @@
 
 ## Surface
 
-Browser Fidelity Lab is a repeated-use developer and QA tool. The first screen is
-the scan workspace, not a marketing landing page.
+Cloak Browser is a repeated-use developer and QA tool. The first screen is the
+scan workspace, not a marketing landing page.
 
 ## References
 

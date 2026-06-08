@@ -53,6 +53,16 @@ Cloudflare auth environment, DNS, `/api/health`, and `/api/ready` are all ready.
 
 ## 4. Deploy
 
+If using the operator-local credential file, treat `../local.env.txt` as a
+private note, not as a shell env file. Do not `source` it. The Cloudflare token
+may be stored as `Authorization: Bearer ...`; load it into the deploy shell
+without printing the value:
+
+```bash
+export CLOUDFLARE_API_TOKEN="$(awk '/Authorization: Bearer /{sub(/^.*Authorization: Bearer /, ""); gsub(/[\"[:space:]]/, ""); print; exit}' ../local.env.txt)"
+export GITHUB_TOKEN="$(awk '/^GITHUB_TOKEN=/{sub(/^GITHUB_TOKEN=/, ""); print; exit}' ../local.env.txt)"
+```
+
 Run the guarded deploy entrypoint:
 
 ```bash
@@ -61,6 +71,11 @@ Run the guarded deploy entrypoint:
 
 The script checks Cloudflare identity, required secrets, CI, D1 migrations,
 expired report purge, deploy, and production smoke.
+
+When the local machine does not have dependencies installed, push to `main`
+with the extracted `GITHUB_TOKEN` and let `.github/workflows/deploy-cloudflare.yml`
+run CI, D1 migrations, Worker deploy, secret configuration, and redeploy using
+GitHub repository secrets.
 
 ## 5. Production Smoke
 

@@ -43,7 +43,7 @@ async function fetchJsonWithTimeout(url: string, timeoutMs = 2_500): Promise<unk
     const response = await fetch(url, {
       headers: {
         Accept: "application/json",
-        "User-Agent": "BrowserFidelityLab/0.1 (+https://cloakbrowser.org)"
+        "User-Agent": "CloakBrowser/0.1 (+https://cloakbrowser.org)"
       },
       signal: controller.signal
     });
