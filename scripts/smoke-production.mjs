@@ -91,8 +91,17 @@ async function checkReportLifecycle() {
   const body = parseJson(await read.text(), `/api/report/${created.id}`);
   assert(read.ok, `/api/report/${created.id} expected 2xx, got ${read.status}`);
   assert(body.id === created.id, "read report id mismatch");
+
+  const pagePath = `/reports/${created.id}`;
+  const page = await fetchWithTimeout(new URL(pagePath, baseUrl));
+  const pageHtml = await page.text();
+  assert(page.ok, `${pagePath} expected 2xx, got ${page.status}`);
+  assert(pageHtml.includes("Short-lived browser fidelity report"), `${pagePath} did not render the shared report page`);
+  assert(!pageHtml.includes("Page not found"), `${pagePath} rendered the 404 page`);
+
   checks.push({ path: "/api/report", status: create.status, ok: true });
   checks.push({ path: `/api/report/${created.id}`, status: read.status, ok: true });
+  checks.push({ path: pagePath, status: page.status, ok: true });
 }
 
 async function fetchWithTimeout(url, init = {}, timeoutMs = 10_000) {
