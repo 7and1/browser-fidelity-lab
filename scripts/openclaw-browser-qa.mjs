@@ -73,7 +73,7 @@ async function checkViewport(name, contextOptions) {
     await page.goto(new URL("/scan", baseUrl).href, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: /start scan/i }).click();
     await expectVisible(page, "text=Suggested Playwright use config");
-    await page.getByRole("button", { name: /^share$/i }).click();
+    await page.getByRole("button", { name: /^share( audit)?$/i }).click();
     await expectVisible(page, "text=Share URL:");
   }
 
