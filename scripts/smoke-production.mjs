@@ -21,10 +21,11 @@ try {
   await checkHtml("/");
   await checkHtml("/scan");
   await checkHtml("/tools");
+  await checkHtml("/docs/cloakbrowser-runtime-compatibility");
   await checkHtml("/tools/playwright-device-preset-generator");
   await checkText("/robots.txt", `Sitemap: ${new URL("/sitemap-index.xml", baseUrl).href}`);
   await checkText("/sitemap-index.xml", "<sitemapindex");
-  await checkText("/sitemap.xml", "/tools/timezone-ip-mismatch-checker");
+  await checkText("/sitemap.xml", "/docs/cloakbrowser-runtime-compatibility");
   await checkJson("/api/health", "ok");
   await checkJson("/api/ready", "ok");
   await checkJson("/api/ip", "ip");

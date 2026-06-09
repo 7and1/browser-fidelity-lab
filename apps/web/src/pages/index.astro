@@ -1,6 +1,5 @@
 ---
-import { EnvironmentScanner } from "../components/EnvironmentScanner";
-import { PresetGenerator } from "../components/PresetGenerator";
+import { BrowserWorkspace } from "../components/BrowserWorkspace";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const schema = {
@@ -23,25 +22,25 @@ const schema = {
   <section class="page-shell home-shell">
     <section class="hero-cockpit" aria-labelledby="home-title">
       <div class="hero-copy">
-        <p class="eyebrow">Browser consistency workspace</p>
+        <p class="eyebrow">Fidelity protection suite</p>
         <h1 id="home-title">Cloak Browser</h1>
         <p class="hero-kicker">
-          Catch profile drift before it breaks a browser test, report, or CI
-          run.
+          Verify browser environment consistency before it breaks a QA report,
+          preset, or CI run.
         </p>
         <p class="subhead">
-          Scan browser-visible state, compare IP, locale, timezone, WebRTC, and
-          runtime signals, then export a coherent Playwright preset.
+          Scan browser-visible state, compare IP, locale, timezone, WebRTC, and runtime signals, then export a coherent
+          Playwright preset.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="#scanner">Run scan</a>
-          <a class="button secondary" href="/docs/ci-browser-fidelity-checks">CI recipe</a>
+          <a class="button primary" href="#scanner">Run global diagnostic scan</a>
+          <a class="button secondary" href="#generator">Explore code exports</a>
         </div>
         <div class="workflow-strip command-flow" aria-label="Cloak Browser workflow">
-          <span>Scan</span>
+          <span>Scan system signals</span>
+          <span>Map timezone and geo</span>
           <span>Fix first</span>
-          <span>Export preset</span>
-          <span>Fail CI below score</span>
+          <span>Generate safe presets</span>
         </div>
       </div>
 
@@ -52,10 +51,10 @@ const schema = {
           <code>score >= 90</code>
         </div>
         <div class="console-score">
-          <span>87</span>
+          <span>95</span>
           <div>
-            <strong>Fix this first</strong>
-            <p>Timezone and egress region disagree.</p>
+            <strong>Structure aligned</strong>
+            <p>Locale, timezone, device, and route signals describe one profile.</p>
           </div>
         </div>
         <dl class="console-grid">
@@ -84,10 +83,6 @@ const schema = {
       </div>
     </section>
 
-    <div id="scanner"></div>
-    <EnvironmentScanner client:load />
-
-    <div class="section-spacer"></div>
-    <PresetGenerator client:visible />
+    <BrowserWorkspace client:load />
   </section>
 </BaseLayout>

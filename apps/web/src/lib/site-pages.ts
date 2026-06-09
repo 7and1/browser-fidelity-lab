@@ -89,6 +89,14 @@ export const sitePages: SitePage[] = [
     priority: "0.7"
   },
   {
+    path: "/docs/cloakbrowser-runtime-compatibility",
+    title: "CloakBrowser Runtime Compatibility",
+    description: "Validate a third-party CloakHQ/CloakBrowser runtime with Cloak Browser without bundling or operating its browser binary.",
+    group: "doc",
+    changefreq: "monthly",
+    priority: "0.7"
+  },
+  {
     path: "/docs/playwright-mobile-emulation",
     title: "Playwright Mobile Emulation Checklist",
     description: "Align Playwright user agent, viewport, DPR, touch, locale, timezone, geolocation, and network settings for repeatable QA.",

@@ -1,0 +1,88 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "CloakBrowser Runtime Compatibility",
+  url: "https://cloakbrowser.org/docs/cloakbrowser-runtime-compatibility",
+  description:
+    "Validate a third-party CloakHQ/CloakBrowser runtime with Cloak Browser without bundling or operating its browser binary."
+};
+---
+
+<BaseLayout
+  title="CloakBrowser Runtime Compatibility | Cloak Browser"
+  description="Check whether a third-party CloakHQ/CloakBrowser Playwright runtime exposes coherent browser, locale, timezone, IP, WebRTC, and automation signals."
+  ogType="article"
+  schema={schema}
+>
+  <section class="page-shell">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>Docs</span>
+    </nav>
+    <div class="tool-intro">
+      <p class="eyebrow">Third-party runtime compatibility</p>
+      <h1>CloakBrowser runtime compatibility checks</h1>
+      <p class="subhead">
+        Use Cloak Browser to inspect a CloakHQ/CloakBrowser runtime you
+        already operate, then fix signal mismatches before relying on that
+        profile for authorized QA.
+      </p>
+    </div>
+
+    <article class="doc-content">
+      <h2>Product boundary</h2>
+      <p>
+        CloakHQ/CloakBrowser is a third-party browser runtime. Cloak Browser is
+        an independent QA project, unaffiliated with CloakHQ, and does not host,
+        redistribute, bundle, resell, or operate CloakBrowser binaries for
+        customers.
+      </p>
+      <p>
+        Follow the official CloakBrowser project and license terms for
+        installation, updates, and runtime operation. Use this page only as a
+        diagnostic checklist for observable browser consistency.
+      </p>
+
+      <h2>Safe compatibility workflow</h2>
+      <ol>
+        <li>Launch your authorized CloakBrowser runtime from its official package or your own controlled CI environment.</li>
+        <li>Open the Cloak Browser scanner from that runtime and run a full environment scan.</li>
+        <li>Review the highest-ranked mismatch first, especially device, runtime, geography, and WebRTC signals.</li>
+        <li>Export the closest Playwright preset or CI threshold after the profile is coherent.</li>
+        <li>Commit only configuration artifacts, never browser profiles, cookies, credentials, or third-party binaries.</li>
+      </ol>
+
+      <h2>Signals to compare</h2>
+      <ul>
+        <li>Runtime: browser engine, user agent tokens, WebGL renderer, canvas, audio, storage, permissions, and webdriver state.</li>
+        <li>Device: viewport, screen size, DPR, touch points, pointer behavior, and claimed mobile or desktop identity.</li>
+        <li>Region: browser language, timezone, optional geolocation, edge country, ASN, and provider flags.</li>
+        <li>Privacy: WebRTC candidates, media-device exposure, local network candidates, and public candidate leakage.</li>
+        <li>CI drift: score threshold, selected preset, and repeatability across browser or runtime upgrades.</li>
+      </ul>
+
+      <h2>What this page does not provide</h2>
+      <p>
+        It does not provide CloakBrowser downloads, binary mirrors, hosted
+        browser execution, proxy recommendations, CAPTCHA bypass guidance, bot
+        control bypass guidance, or advice for systems you are not authorized to
+        test.
+      </p>
+
+      <h2>Next step</h2>
+      <p>
+        Start with the <a href="/scan">full scanner</a>. If the first mismatch
+        is device identity, use the
+        <a href="/tools/mobile-browser-fingerprint-test">mobile fingerprint test</a>.
+        If the first mismatch is geography, use the
+        <a href="/tools/timezone-ip-mismatch-checker">timezone/IP checker</a>.
+        If the profile is stable, move the exported preset into
+        <a href="/docs/ci-browser-fidelity-checks">CI browser consistency checks</a>.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

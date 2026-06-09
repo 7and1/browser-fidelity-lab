@@ -1,4 +1,20 @@
-import { Copy, Download, Globe2, Play, Radar, Share2, ShieldCheck } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  CheckCircle2,
+  Clock3,
+  Copy,
+  Download,
+  Globe2,
+  Loader2,
+  Monitor,
+  Play,
+  Radar,
+  Share2,
+  ShieldCheck,
+  Wifi
+} from "lucide-react";
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import {
   extractIpv4Addresses,
@@ -16,15 +32,21 @@ import {
   type SignalCategory,
   type WebrtcSignal
 } from "@browser-fidelity/fidelity-core";
+import type { WorkspaceScanResult } from "./workspace-types";
 
 type ScanState = "idle" | "running" | "complete" | "error";
 type ScoreFilter = "all" | "device" | "geo" | "leakRisk" | "automation";
+type MetricStatus = "waiting" | "ok" | "warning" | "critical";
 
 interface ApiIpResponse {
   ip: IpSignals;
 }
 
-export function EnvironmentScanner() {
+interface EnvironmentScannerProps {
+  onScanComplete?: (result: WorkspaceScanResult) => void;
+}
+
+export function EnvironmentScanner({ onScanComplete }: EnvironmentScannerProps) {
   const [state, setState] = useState<ScanState>("idle");
   const [includeWebrtc, setIncludeWebrtc] = useState(false);
   const [report, setReport] = useState<BrowserSignalReport | undefined>();
@@ -101,9 +123,11 @@ export function EnvironmentScanner() {
         ip,
         consent: { webrtc: includeWebrtc, geolocation: false, mediaDevices: false }
       });
+      const nextScore = scoreReport(nextReport);
       setReport(nextReport);
-      setScore(scoreReport(nextReport));
+      setScore(nextScore);
       setState("complete");
+      onScanComplete?.({ report: nextReport, score: nextScore });
     } catch (scanError) {
       setError(scanError instanceof Error ? scanError.message : String(scanError));
       setState("error");
@@ -156,13 +180,17 @@ export function EnvironmentScanner() {
     }
   }
 
+  const scoreTone = score ? scoreToneFor(score.overall) : "idle";
+  const circumference = 314.15;
+  const scoreOffset = score ? circumference - (score.overall / 100) * circumference : circumference;
+
   return (
-    <section className="grid-two scanner-workbench" aria-label="Browser environment scanner">
+    <section className="workspace-grid scanner-workbench" aria-label="Browser environment scanner">
       <div className="panel scan-panel" aria-busy={state === "running" || sharePending}>
         <div className="panel-header">
           <div>
-            <p className="eyebrow">Live scan</p>
-            <h2>Browser environment consistency</h2>
+            <p className="eyebrow">Interactive diagnostic dashboard</p>
+            <h2>Advanced browser signal auditor</h2>
           </div>
           <div className="button-row">
             <button
@@ -172,40 +200,43 @@ export function EnvironmentScanner() {
               disabled={state === "running"}
               aria-describedby="scanner-data-note"
             >
-              <Play size={16} aria-hidden="true" />
-              {state === "running" ? "Scanning" : "Start scan"}
+              {state === "running" ? <Loader2 className="spin" size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+              {state === "running" ? "Scanning" : "Run audit scan"}
             </button>
             <button className="button secondary" type="button" onClick={downloadJson} disabled={!report}>
               <Download size={16} aria-hidden="true" />
-              JSON
+              Export JSON
             </button>
             <button className="button secondary" type="button" onClick={shareReport} disabled={!report || sharePending}>
               <Share2 size={16} aria-hidden="true" />
-              {sharePending ? "Sharing" : "Share"}
+              {sharePending ? "Sharing" : "Share audit"}
             </button>
           </div>
         </div>
-        <div className="panel-body">
-          <p className="visually-hidden" role="status" aria-live="polite">
-            {statusMessage}
-          </p>
-          <div className="data-note" id="scanner-data-note">
-            <strong>Data use:</strong> the scan reads browser-visible signals in
-            this tab and calls the edge IP endpoint. JSON download is local.
-            Share stores a redacted report for seven days by default and removes
-            raw IP from stored report JSON.
+
+        <div className="sandbox-strip">
+          <div>
+            <p className="eyebrow">QA scenario controls</p>
+            <p>Optional checks run only after consent and use the current browser session.</p>
           </div>
-          <label className="sensitive-toggle">
+          <label className="sensitive-toggle compact-toggle">
             <input
               type="checkbox"
               checked={includeWebrtc}
               onChange={(event) => setIncludeWebrtc(event.currentTarget.checked)}
             />
-            <span>
-              Run optional WebRTC candidate check. This may reveal local or routing
-              candidates and only runs after you start a scan.
-            </span>
+            <span>Run WebRTC candidate check</span>
           </label>
+        </div>
+
+        <div className="panel-body">
+          <p className="visually-hidden" role="status" aria-live="polite">
+            {statusMessage}
+          </p>
+          <div className="data-note" id="scanner-data-note">
+            <strong>Data use:</strong> the scan reads browser-visible signals in this tab and calls the edge IP endpoint. JSON download
+            is local. Share stores a redacted report for seven days by default and removes raw IP from stored report JSON.
+          </div>
 
           {error ? (
             <p className="status-line error" role="alert">
@@ -219,33 +250,96 @@ export function EnvironmentScanner() {
             </p>
           ) : null}
 
-          {signalRows.length > 0 ? (
-            <div className="table-wrap" tabIndex={0} aria-label="Scrollable browser signal observations table">
-              <table className="signal-table">
-                <caption className="visually-hidden">Browser signal observations</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Signal</th>
-                    <th scope="col">Observed value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {signalRows.map(([label, value]) => (
-                    <tr key={label}>
-                      <th scope="row">{label}</th>
-                      <td>{value}</td>
+          {report ? (
+            <div className="scan-results">
+              <div className="scan-metric-grid">
+                <SignalCard
+                  icon={<Wifi size={16} aria-hidden="true" />}
+                  title="Network egress audit"
+                  status={statusForCategories(score, ["geo", "network"])}
+                  rows={[
+                    ["Detected country", report.ip?.countryCode ?? "unknown"],
+                    ["Edge city", [report.ip?.city, report.ip?.region].filter(Boolean).join(", ") || "unknown"],
+                    ["IP timezone", report.ip?.timezone ?? "unknown"],
+                    ["ASN", report.ip?.asn ?? "unknown"]
+                  ]}
+                />
+                <SignalCard
+                  icon={<Clock3 size={16} aria-hidden="true" />}
+                  title="Locale and clock alignment"
+                  status={statusForCategories(score, ["geo"])}
+                  rows={[
+                    ["Primary language", report.client.languages[0] ?? report.client.language ?? "unknown"],
+                    ["Runtime timezone", report.client.timezone ?? "unknown"],
+                    ["Clock offset", formatOffset(report.client.timezoneOffsetMinutes)],
+                    ["Language count", String(report.client.languages.length)]
+                  ]}
+                />
+                <SignalCard
+                  icon={<Monitor size={16} aria-hidden="true" />}
+                  title="Hardware and rendering"
+                  status={statusForCategories(score, ["device", "runtime"])}
+                  rows={[
+                    ["Device class", report.client.deviceType ?? "unknown"],
+                    ["Viewport", `${report.client.viewport.width} x ${report.client.viewport.height}`],
+                    ["Screen / DPR", `${report.client.screen.width} x ${report.client.screen.height} / ${report.client.devicePixelRatio}x`],
+                    ["WebGL renderer", report.client.webgl?.renderer ?? "unavailable"]
+                  ]}
+                />
+                <SignalCard
+                  icon={<ShieldCheck size={16} aria-hidden="true" />}
+                  title="Security and automation"
+                  status={statusForCategories(score, ["privacy", "automation"])}
+                  rows={[
+                    ["Webdriver", report.client.webdriver ? "true" : "false"],
+                    ["WebRTC", report.client.webrtc?.checked ? `${report.client.webrtc.candidates.length} candidate(s)` : "not checked"],
+                    ["Canvas hash", report.client.canvas?.sampleHash ?? "unavailable"],
+                    ["Audio", report.client.audio?.supported ? `${report.client.audio.sampleRate ?? "unknown"} Hz` : "unavailable"]
+                  ]}
+                />
+              </div>
+
+              <div className="canvas-card">
+                <div>
+                  <p className="eyebrow">Local render challenge</p>
+                  <h3>Canvas, audio, and WebGL signatures</h3>
+                </div>
+                <div className="render-signature-grid">
+                  <SignatureValue label="Canvas hash" value={report.client.canvas?.sampleHash ?? "unavailable"} />
+                  <SignatureValue label="Audio sample rate" value={report.client.audio?.sampleRate ? `${report.client.audio.sampleRate} Hz` : "unavailable"} />
+                  <SignatureValue label="WebGL vendor" value={report.client.webgl?.vendor ?? "unavailable"} />
+                </div>
+              </div>
+
+              <div className="table-wrap" tabIndex={0} aria-label="Scrollable browser signal observations table">
+                <table className="signal-table">
+                  <caption className="visually-hidden">Browser signal observations</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Signal</th>
+                      <th scope="col">Observed value</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {signalRows.map(([label, value]) => (
+                      <tr key={label}>
+                        <th scope="row">{label}</th>
+                        <td>{value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <div className="empty-state">
               <Radar size={34} aria-hidden="true" />
-              <p>
-                Start a scan to inspect browser-visible signals, edge geography,
-                language, timezone, storage, rendering, and optional WebRTC state.
-              </p>
+              <h3>Audit scan engine idle</h3>
+              <p>Start a scan to inspect browser-visible signals, edge geography, language, timezone, storage, rendering, and optional WebRTC state.</p>
+              <button className="button primary" type="button" onClick={runScan}>
+                <Play size={16} aria-hidden="true" />
+                Start scan now
+              </button>
             </div>
           )}
         </div>
@@ -254,12 +348,33 @@ export function EnvironmentScanner() {
       <aside className="panel score-panel" aria-label="Score summary">
         <div className="panel-header">
           <div>
-            <p className="eyebrow">Score</p>
-            <h2>{score ? `${score.overall}/100` : "Waiting"}</h2>
+            <p className="eyebrow">Fidelity rating</p>
+            <h2>Consistency score</h2>
           </div>
-          <ShieldCheck size={24} aria-hidden="true" />
+          <Activity size={24} aria-hidden="true" />
         </div>
         <div className="panel-body dense-list">
+          <div className="score-orb">
+            <svg viewBox="0 0 112 112" aria-hidden="true">
+              <circle cx="56" cy="56" r="50" className="score-track" />
+              <circle
+                cx="56"
+                cy="56"
+                r="50"
+                className={`score-ring ${scoreTone}`}
+                strokeDasharray={circumference}
+                strokeDashoffset={scoreOffset}
+              />
+            </svg>
+            <div>
+              <strong>{score ? score.overall : "--"}</strong>
+              <span>integrity</span>
+            </div>
+          </div>
+
+          <span className={`status-pill score-status ${scoreTone}`}>{score ? scoreSummary(score.overall).label : "Awaiting diagnosis"}</span>
+          <p className="score-copy">{score ? scoreSummary(score.overall).body : "Run a scan to score the current browser profile against consistency rules."}</p>
+
           {score ? (
             <>
               <div className="score-grid">
@@ -268,6 +383,7 @@ export function EnvironmentScanner() {
                 <ScoreTile label="Leak risk" value={score.breakdown.leakRisk} />
                 <ScoreTile label="Automation QA" value={score.breakdown.automationReadiness} />
               </div>
+
               <div className="button-row compact-controls" aria-label="Score category filter">
                 {scoreFilters.map((filter) => (
                   <button
@@ -281,21 +397,35 @@ export function EnvironmentScanner() {
                   </button>
                 ))}
               </div>
+
               {report?.client.webrtc?.checked ? null : (
                 <div className="data-note compact-note">
-                  Leak-risk confidence is partial until the optional WebRTC
-                  candidate check is run.
+                  Leak-risk confidence is partial until the optional WebRTC candidate check is run.
                 </div>
               )}
+
+              <div className="warning-log">
+                <p className="eyebrow">Live diagnostic warnings</p>
+                {rankedRemediations.length ? (
+                  rankedRemediations.slice(0, 5).map((item) => <WarningItem item={item} key={item.mismatchId} />)
+                ) : (
+                  <div className="mismatch info">
+                    <CheckCircle2 size={16} aria-hidden="true" />
+                    <div>
+                      <strong>No high-impact mismatches detected</strong>
+                      <p>The observed browser and network signals are internally coherent.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="fix-first">
                 <div>
                   <p className="eyebrow">Fix this first</p>
                   <h3>{rankedRemediations[0]?.title ?? "No prioritized fixes"}</h3>
                 </div>
                 {rankedRemediations.length ? (
-                  rankedRemediations.slice(0, 3).map((item) => (
-                    <RemediationItem item={item} key={item.mismatchId} />
-                  ))
+                  rankedRemediations.slice(0, 3).map((item) => <RemediationItem item={item} key={item.mismatchId} />)
                 ) : (
                   <div className="mismatch info">
                     <strong>No fixes in this filter</strong>
@@ -303,22 +433,7 @@ export function EnvironmentScanner() {
                   </div>
                 )}
               </div>
-              <div className="mismatch-list">
-                {rankedRemediations.length ? (
-                  rankedRemediations.map((item) => (
-                    <div className={`mismatch ${item.severity}`} key={item.mismatchId}>
-                      <strong>{item.title}</strong>
-                      <p>{item.detail}</p>
-                      <p className="remediation">{item.action}</p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="mismatch info">
-                    <strong>No high-impact mismatches detected</strong>
-                    <p>The observed browser and network signals are internally coherent.</p>
-                  </div>
-                )}
-              </div>
+
               {report ? (
                 <div className="suggested-config">
                   <div className="panel-header inline-panel-header">
@@ -326,7 +441,7 @@ export function EnvironmentScanner() {
                       <p className="eyebrow">Next action</p>
                       <h3>Suggested Playwright use config</h3>
                     </div>
-                    <button className="button secondary" type="button" onClick={copySuggestedConfig}>
+                    <button className="button secondary compact-button" type="button" onClick={copySuggestedConfig}>
                       <Copy size={16} aria-hidden="true" />
                       Copy
                     </button>
@@ -334,10 +449,7 @@ export function EnvironmentScanner() {
                   <pre className="code-box" tabIndex={0} aria-label="Suggested Playwright use config">
                     <code>{suggestedPlaywrightUse(report)}</code>
                   </pre>
-                  <p className="inline-note">
-                    Use this as a starting point, then align network route,
-                    geolocation, and provider-specific launch options in your CI.
-                  </p>
+                  <p className="inline-note">Use this as a starting point, then align route, geolocation, and CI launch options.</p>
                   <p className="visually-hidden" role="status" aria-live="polite">
                     {suggestedCopyStatus}
                   </p>
@@ -356,26 +468,45 @@ export function EnvironmentScanner() {
   );
 }
 
-function suggestedPlaywrightUse(report: BrowserSignalReport): string {
-  const primaryLocale = report.client.languages[0] ?? report.client.language ?? "en-US";
-  const isMobile = report.client.deviceType === "mobile" || report.client.deviceType === "tablet";
-  const hasTouch = report.client.touchPoints > 0 || isMobile;
-  const permissions = Object.entries(report.client.permissions ?? {})
-    .filter(([, value]) => value === "granted")
-    .map(([name]) => name);
-  const fields: Record<string, unknown> = {
-    userAgent: report.client.userAgent,
-    viewport: report.client.viewport,
-    screen: report.client.screen,
-    deviceScaleFactor: report.client.devicePixelRatio,
-    isMobile,
-    hasTouch,
-    locale: primaryLocale,
-    timezoneId: report.client.timezone ?? "UTC",
-    permissions
-  };
+function SignalCard({
+  icon,
+  title,
+  status,
+  rows
+}: {
+  icon: ReactNode;
+  title: string;
+  status: MetricStatus;
+  rows: Array<[string, string]>;
+}) {
+  return (
+    <div className="signal-card">
+      <div className="signal-card-head">
+        <span>
+          {icon}
+          {title}
+        </span>
+        <span className={`metric-status ${status}`}>{metricStatusLabel(status)}</span>
+      </div>
+      <dl>
+        {rows.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
 
-  return `use: ${JSON.stringify(fields, null, 2)}`;
+function SignatureValue({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
 }
 
 function ScoreTile({ label, value }: { label: string; value: number }) {
@@ -383,6 +514,18 @@ function ScoreTile({ label, value }: { label: string; value: number }) {
     <div className="score-tile">
       <strong>{value}</strong>
       <span>{label}</span>
+    </div>
+  );
+}
+
+function WarningItem({ item }: { item: RemediationRecommendation }) {
+  return (
+    <div className={`mismatch ${item.severity}`}>
+      <AlertTriangle size={16} aria-hidden="true" />
+      <div>
+        <strong>{item.title}</strong>
+        <p>{item.detail}</p>
+      </div>
     </div>
   );
 }
@@ -415,6 +558,52 @@ function matchesScoreFilter(category: SignalCategory, filter: ScoreFilter): bool
   if (filter === "geo") return category === "geo" || category === "network";
   if (filter === "leakRisk") return category === "privacy" || category === "network";
   return category === "automation";
+}
+
+function statusForCategories(score: FidelityScore | undefined, categories: SignalCategory[]): MetricStatus {
+  if (!score) return "waiting";
+  const mismatches = score.mismatches.filter((item) => categories.includes(item.category));
+  if (mismatches.some((item) => item.severity === "critical")) return "critical";
+  if (mismatches.some((item) => item.severity === "warning")) return "warning";
+  return "ok";
+}
+
+function metricStatusLabel(status: MetricStatus): string {
+  if (status === "ok") return "Aligned";
+  if (status === "warning") return "Review";
+  if (status === "critical") return "Conflict";
+  return "Pending";
+}
+
+function scoreToneFor(value: number): "good" | "warn" | "bad" {
+  if (value >= 90) return "good";
+  if (value >= 70) return "warn";
+  return "bad";
+}
+
+function scoreSummary(value: number): { label: string; body: string } {
+  if (value >= 90) {
+    return {
+      label: "Coherent profile",
+      body: "The current browser profile is suitable for repeatable QA evidence."
+    };
+  }
+  if (value >= 70) {
+    return {
+      label: "Parameter drift warning",
+      body: "The current browser profile has inconsistencies that should be reviewed before CI use."
+    };
+  }
+  return {
+    label: "High-risk signature",
+    body: "Critical browser, network, or automation signals need remediation before this profile is trusted."
+  };
+}
+
+function formatOffset(value: number | undefined): string {
+  if (typeof value !== "number") return "unknown";
+  const hours = -(value / 60);
+  return `UTC${hours >= 0 ? "+" : ""}${hours} (${value} min)`;
 }
 
 async function fetchIpSignals(): Promise<IpSignals | undefined> {
@@ -460,6 +649,28 @@ async function collectClientSignals(includeWebrtc: boolean): Promise<ClientSigna
     permissions,
     webrtc
   };
+}
+
+function suggestedPlaywrightUse(report: BrowserSignalReport): string {
+  const primaryLocale = report.client.languages[0] ?? report.client.language ?? "en-US";
+  const isMobile = report.client.deviceType === "mobile" || report.client.deviceType === "tablet";
+  const hasTouch = report.client.touchPoints > 0 || isMobile;
+  const permissions = Object.entries(report.client.permissions ?? {})
+    .filter(([, value]) => value === "granted")
+    .map(([name]) => name);
+  const fields: Record<string, unknown> = {
+    userAgent: report.client.userAgent,
+    viewport: report.client.viewport,
+    screen: report.client.screen,
+    deviceScaleFactor: report.client.devicePixelRatio,
+    isMobile,
+    hasTouch,
+    locale: primaryLocale,
+    timezoneId: report.client.timezone ?? "UTC",
+    permissions
+  };
+
+  return `use: ${JSON.stringify(fields, null, 2)}`;
 }
 
 function storageState(name: "localStorage" | "sessionStorage"): "available" | "blocked" {

@@ -63,14 +63,20 @@ const isActive = (href: string) =>
     <header class="site-header">
       <nav class="nav-shell" aria-label="Main navigation">
         <a class="brand" href="/" aria-label="Cloak Browser home">
-          <span class="brand-mark" aria-hidden="true">CB</span>
-          <span>Cloak Browser</span>
+          <span class="brand-mark" aria-hidden="true">
+            <span>CB</span>
+          </span>
+          <span class="brand-copy">
+            <strong>Cloak Browser</strong>
+            <small>QA & consistency lab</small>
+          </span>
         </a>
         <div class="nav-links">
-          <a href="/scan" aria-current={isActive("/scan") ? "page" : undefined}>Scan</a>
+          <a href="/#workspace" aria-current={isActive("/scan") ? "page" : undefined}>Workspace</a>
           <a href="/tools" aria-current={isActive("/tools") ? "page" : undefined}>Tools</a>
           <a href="/docs/browser-fingerprint-consistency" aria-current={isActive("/docs") ? "page" : undefined}>Docs</a>
           <a href="/privacy-and-abuse-policy" aria-current={isActive("/privacy-and-abuse-policy") ? "page" : undefined}>Policy</a>
+          <a class="nav-cta" href="/#scanner">Quick scan</a>
         </div>
       </nav>
     </header>
@@ -80,13 +86,14 @@ const isActive = (href: string) =>
     <footer class="site-footer">
       <div>
         <strong>Cloak Browser</strong>
-        <span>Browser consistency tools for authorized QA, security review, and Playwright environments.</span>
+        <span>Independent browser consistency tools for authorized QA. Not affiliated with CloakHQ or the third-party CloakBrowser runtime.</span>
       </div>
       <div class="footer-links">
         <a href="/tools">All tools</a>
         <a href="/tools/timezone-ip-mismatch-checker">Timezone/IP</a>
         <a href="/docs/playwright-mobile-emulation">Playwright docs</a>
         <a href="/docs/ci-browser-fidelity-checks">CI checks</a>
+        <a href="/docs/cloakbrowser-runtime-compatibility">CloakBrowser compatibility</a>
         <a href="/tools/webrtc-leak-test">WebRTC check</a>
         <a href="/privacy-and-abuse-policy">Privacy</a>
       </div>

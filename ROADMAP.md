@@ -11,11 +11,15 @@ locale, timezone, WebRTC, and Playwright consistency.
   region combinations.
 - Keep shared reports privacy-safe, redacted, short-lived, and useful for team
   handoff.
+- Add compatibility guidance for third-party runtimes as diagnostic docs, not
+  as bundled browser distribution or hosted browser execution.
 
 ## Deferred
 
 - npm package publishing beyond the existing package metadata.
 - Self-hosting templates and deployment variants.
 - Proxy-provider-specific presets or workflows.
+- Third-party browser aggregation, binary redistribution, hosted browser
+  execution, or OEM/SaaS embedding.
 - Any guidance for bypassing authentication, CAPTCHA, bot controls, fraud
   systems, or systems the operator is not authorized to test.

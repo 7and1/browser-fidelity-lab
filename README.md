@@ -4,7 +4,9 @@ Cloak Browser is an open-source QA surface for checking whether browser, mobile,
 locale, timezone, IP geography, WebRTC, and Playwright settings describe one
 coherent environment.
 
-The public site and product name are **Cloak Browser**.
+The public site and product name are **Cloak Browser**. This project is an
+independent QA tool and is not affiliated with CloakHQ or the third-party
+CloakBrowser runtime.
 
 ## What It Does
 
@@ -16,6 +18,8 @@ The public site and product name are **Cloak Browser**.
 - Exports Playwright configuration, Node snippets, Python snippets, JSON
   presets, CI recipes, and CI matrix entries.
 - Provides a CLI for local and CI audits.
+- Documents how to validate third-party browser runtimes, including
+  CloakHQ/CloakBrowser, without bundling or operating those runtimes.
 
 ## What It Does Not Do
 
@@ -23,6 +27,10 @@ This project does not host, redistribute, embed, resell, or operate any
 third-party browser binary for customers. It is not a tool for bypassing
 authentication, bot controls, abuse systems, or any system you are not
 authorized to test.
+
+Cloak Browser may describe compatibility checks for third-party runtimes, but
+users must install, license, and operate those runtimes directly from their
+official sources.
 
 ## Workspace
 

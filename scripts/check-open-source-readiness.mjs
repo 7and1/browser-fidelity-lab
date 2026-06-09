@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const checks = [];
+const compatibilityDoc = ["apps", "web", "src", "pages", "docs", "cloakbrowser-runtime-compatibility.astro"].join("/");
 const ignoredDirs = new Set([
   ".astro",
   ".git",
@@ -27,6 +28,7 @@ const requiredFiles = [
   ".github/ISSUE_TEMPLATE/preset_request.md",
   "docs/API.md",
   "docs/LAUNCH_CHECKLIST.md",
+  compatibilityDoc,
   ".env.example",
   ".gitignore"
 ];
@@ -58,7 +60,21 @@ const readme = readText("README.md");
 if (readme) {
   check("readme:scope", readme.includes("What It Does Not Do"), "README states non-goals and authorized-use boundary");
   check("readme:brand", readme.includes("Cloak Browser"), "README carries the Cloak Browser brand name");
+  check(
+    "readme:third-party-boundary",
+    readme.includes("does not host, redistribute, embed, resell, or operate any"),
+    "README states the third-party browser runtime boundary"
+  );
   check("readme:production-acceptance", readme.includes("Production Acceptance"), "README documents production acceptance gates");
+}
+
+const sitePages = readText("apps/web/src/lib/site-pages.ts");
+if (sitePages) {
+  check(
+    "site-pages:cloakbrowser-compatibility",
+    sitePages.includes("/docs/cloakbrowser-runtime-compatibility"),
+    "sitemap registry includes the CloakBrowser compatibility doc"
+  );
 }
 
 const envExample = readText(".env.example");

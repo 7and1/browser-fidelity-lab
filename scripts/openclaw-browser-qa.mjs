@@ -6,10 +6,11 @@ const baseUrl =
   process.env.OPENCLAW_PREVIEW_URL ??
   "http://127.0.0.1:3290";
 const requireShare = process.env.CLOAKBROWSER_QA_REQUIRE_SHARE === "1";
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
 
 const checks = [];
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(chromiumExecutablePath ? { executablePath: chromiumExecutablePath } : {});
 
 try {
   await checkViewport("desktop", {});
