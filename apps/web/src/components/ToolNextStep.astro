@@ -1,0 +1,30 @@
+---
+import { sitePages } from "../lib/site-pages";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const currentPage = sitePages.find((page) => page.path === currentPath);
+const scanPage = sitePages.find((page) => page.path === "/scan");
+const presetPage = sitePages.find((page) => page.path === "/tools/playwright-device-preset-generator");
+---
+
+<aside class="next-step-panel" aria-label="Recommended next step">
+  <div>
+    <p class="eyebrow">Next step</p>
+    <h2>{currentPage?.nextStep ?? "Turn this check into repeatable QA evidence."}</h2>
+    <p>
+      Use the full scanner for a shared report, then export a coherent Playwright preset when the profile is ready
+      for CI.
+    </p>
+  </div>
+  <div class="next-step-actions">
+    {currentPath === "/scan" ? null : <a class="button primary" href="/scan">{scanPage?.title ?? "Run full scan"}</a>}
+    {currentPath === "/tools/playwright-device-preset-generator" ? null : (
+      <a class="button secondary" href="/tools/playwright-device-preset-generator">{presetPage?.title ?? "Generate preset"}</a>
+    )}
+    <a class="button secondary" href="/docs/ci-browser-fidelity-checks">CI workflow</a>
+  </div>
+</aside>

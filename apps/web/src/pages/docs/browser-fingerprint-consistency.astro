@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolNextStep from "../../components/ToolNextStep.astro";
 
 const schema = {
   "@context": "https://schema.org",
@@ -62,5 +63,6 @@ const schema = {
         recommendations for systems you are not authorized to test.
       </p>
     </article>
+    <ToolNextStep currentPath="/docs/browser-fingerprint-consistency" />
   </section>
 </BaseLayout>

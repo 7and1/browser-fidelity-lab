@@ -1,5 +1,6 @@
 ---
 import { EnvironmentScanner } from "../components/EnvironmentScanner";
+import ToolNextStep from "../components/ToolNextStep.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const schema = {
@@ -33,5 +34,6 @@ const schema = {
       </p>
     </div>
     <EnvironmentScanner client:load />
+    <ToolNextStep currentPath="/scan" />
   </section>
 </BaseLayout>

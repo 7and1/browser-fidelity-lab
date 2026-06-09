@@ -8,7 +8,7 @@
     "size": 10
   },
   "prepare_cmd": "pnpm install --frozen-lockfile && pnpm run ci",
-  "preview_cmd": "cd /Users/openclaw/test-workspace/cloakbrowser-org/apps/web && pnpm run preview -- --ip 127.0.0.1 --port \"$OPENCLAW_PORT\"",
+  "preview_cmd": "cd /Users/openclaw/test-workspace/cloakbrowser-org/apps/web && pnpm exec wrangler dev dist/_worker.js/scheduled-worker.js --assets dist --test-scheduled --port \"$OPENCLAW_PORT\" --ip 127.0.0.1",
   "validation_cmd": "OPENCLAW_QA_BASE_URL=\"${OPENCLAW_TARGET_URL:-${OPENCLAW_PREVIEW_URL:-http://127.0.0.1:3290}}\" node ./scripts/openclaw-browser-qa.mjs",
   "validation_kind": "browser",
   "public_base_url": "https://cloakbrowser.org",

@@ -12,6 +12,7 @@
     "lint:content": "node scripts/check-content-policy.mjs",
     "check:open-source": "node scripts/check-open-source-readiness.mjs",
     "check:launch": "node scripts/check-launch-readiness.mjs --public",
+    "smoke:seo": "node scripts/smoke-seo-routes.mjs",
     "qa:browser": "node scripts/openclaw-browser-qa.mjs",
     "smoke:production": "node scripts/smoke-production.mjs",
     "ci": "pnpm lint:content && pnpm check:open-source && pnpm typecheck && pnpm build && pnpm test"

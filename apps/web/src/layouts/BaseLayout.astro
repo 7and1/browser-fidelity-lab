@@ -19,6 +19,7 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://cloakbrowser.org");
 const currentPath = Astro.url.pathname;
+const socialImage = new URL("/icon-512.png", Astro.site ?? "https://cloakbrowser.org");
 const schemas = [
   {
     "@context": "https://schema.org",
@@ -58,9 +59,12 @@ const isActive = (href: string) =>
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={socialImage.href} />
+    <meta property="og:image:alt" content="Cloak Browser consistency lab icon" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage.href} />
     {schemas.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
   </head>
   <body>

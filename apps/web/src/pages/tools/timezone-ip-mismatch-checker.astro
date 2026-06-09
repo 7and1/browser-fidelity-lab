@@ -1,5 +1,6 @@
 ---
 import { EnvironmentScanner } from "../../components/EnvironmentScanner";
+import ToolNextStep from "../../components/ToolNextStep.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const schema = {
@@ -61,5 +62,6 @@ const schema = {
         a user classification decision.
       </p>
     </article>
+    <ToolNextStep currentPath="/tools/timezone-ip-mismatch-checker" />
   </section>
 </BaseLayout>

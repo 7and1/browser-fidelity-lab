@@ -1,20 +1,55 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePages } from "../../lib/site-pages";
+import type { SitePage } from "../../lib/site-pages";
 
 const toolPages = sitePages.filter((page) => page.group === "tool" && page.path !== "/tools");
+const isSitePage = (page: SitePage | undefined): page is SitePage => Boolean(page);
+const groupedTools = [
+  {
+    title: "Start with a full report",
+    summary: "Use these when you need a complete browser, network, and preset workflow.",
+    paths: ["/scan", "/tools/playwright-device-preset-generator"]
+  },
+  {
+    title: "Find regional drift",
+    summary: "Use these when IP country, timezone, locale, route, or ASN signals need to line up.",
+    paths: ["/tools/proxy-geo-consistency-checker", "/tools/timezone-ip-mismatch-checker"]
+  },
+  {
+    title: "Inspect device and leak-risk signals",
+    summary: "Use these when claimed device identity, WebRTC candidates, or user-agent strings need focused review.",
+    paths: ["/tools/mobile-browser-fingerprint-test", "/tools/webrtc-leak-test", "/tools/user-agent-parser"]
+  }
+].map((group) => ({
+  ...group,
+  pages: group.paths.map((path) => sitePages.find((page) => page.path === path)).filter(isSitePage)
+}));
 const schema = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   name: "Cloak Browser Tools",
   url: "https://cloakbrowser.org/tools",
-  hasPart: toolPages.map((page) => ({
-    "@type": "WebApplication",
-    name: page.title,
-    url: `https://cloakbrowser.org${page.path}`,
-    applicationCategory: "DeveloperApplication",
-    description: page.description
-  }))
+  hasPart: [
+    {
+      "@type": "ItemList",
+      name: "Cloak Browser focused QA tools",
+      itemListElement: toolPages.map((page, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `https://cloakbrowser.org${page.path}`,
+        name: page.title,
+        description: page.description
+      }))
+    },
+    ...toolPages.map((page) => ({
+      "@type": "WebApplication",
+      name: page.title,
+      url: `https://cloakbrowser.org${page.path}`,
+      applicationCategory: "DeveloperApplication",
+      description: page.description
+    }))
+  ]
 };
 ---
 
@@ -40,13 +75,30 @@ const schema = {
       </p>
     </div>
 
-    <div class="tool-grid">
-      {toolPages.map((page) => (
-        <a class="tool-card" href={page.path}>
-          <span class="eyebrow">{page.path.includes("playwright") ? "Preset" : "Diagnostic"}</span>
-          <h2>{page.title}</h2>
-          <p>{page.description}</p>
-        </a>
+    <div class="tool-group-stack">
+      {groupedTools.map((group) => (
+        <section class="tool-group" aria-labelledby={`group-${group.title.toLowerCase().replaceAll(" ", "-")}`}>
+          <div class="tool-group-copy">
+            <p class="eyebrow">Intent</p>
+            <h2 id={`group-${group.title.toLowerCase().replaceAll(" ", "-")}`}>{group.title}</h2>
+            <p>{group.summary}</p>
+          </div>
+          <div class="tool-grid">
+            {group.pages.map((page) => (
+              <a class="tool-card" href={page.path}>
+                <span class="eyebrow">{page.path.includes("playwright") ? "Preset" : page.path === "/scan" ? "Full scan" : "Diagnostic"}</span>
+                <h3>{page.title}</h3>
+                <p>{page.intent ?? page.description}</p>
+                <span class="tag-row" aria-label={`${page.title} tags`}>
+                  {(page.tags ?? []).slice(0, 3).map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </span>
+                <span class="tool-card-cta">Open tool</span>
+              </a>
+            ))}
+          </div>
+        </section>
       ))}
     </div>
 

@@ -1,5 +1,6 @@
 ---
 import { EnvironmentScanner } from "../../components/EnvironmentScanner";
+import ToolNextStep from "../../components/ToolNextStep.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const schema = {
@@ -55,5 +56,6 @@ const schema = {
         network-sensitive QA fixture.
       </p>
     </article>
+    <ToolNextStep currentPath="/tools/webrtc-leak-test" />
   </section>
 </BaseLayout>

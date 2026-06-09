@@ -1,6 +1,19 @@
 ---
 import { BrowserWorkspace } from "../components/BrowserWorkspace";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sitePages } from "../lib/site-pages";
+import type { SitePage } from "../lib/site-pages";
+
+const isSitePage = (page: SitePage | undefined): page is SitePage => Boolean(page);
+
+const qaJobs = [
+  "/tools/timezone-ip-mismatch-checker",
+  "/tools/mobile-browser-fingerprint-test",
+  "/tools/webrtc-leak-test",
+  "/tools/playwright-device-preset-generator"
+]
+  .map((path) => sitePages.find((page) => page.path === path))
+  .filter(isSitePage);
 
 const schema = {
   "@context": "https://schema.org",
@@ -80,6 +93,21 @@ const schema = {
   timezoneId: "America/New_York",
   hasTouch: false
 }`}</code></pre>
+      </div>
+    </section>
+
+    <section class="growth-strip" aria-labelledby="qa-jobs-title">
+      <div>
+        <p class="eyebrow">Common QA jobs</p>
+        <h2 id="qa-jobs-title">Jump straight to the browser consistency failure you need to prove.</h2>
+      </div>
+      <div class="growth-link-grid">
+        {qaJobs.map((page) => (
+          <a class="growth-link" href={page.path}>
+            <strong>{page.title}</strong>
+            <span>{page.intent}</span>
+          </a>
+        ))}
       </div>
     </section>
 

@@ -1,5 +1,10 @@
 import type { APIRoute } from "astro";
-import { siteUrl } from "../lib/site-pages";
+import { sitePages, siteUrl } from "../lib/site-pages";
+
+const newestLastmod = sitePages
+  .map((page) => page.lastmod)
+  .sort()
+  .at(-1);
 
 export const GET: APIRoute = ({ site }) =>
   new Response(
@@ -7,7 +12,7 @@ export const GET: APIRoute = ({ site }) =>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>${siteUrl("/sitemap.xml", site?.href)}</loc>
-    <lastmod>2026-06-03</lastmod>
+    <lastmod>${newestLastmod}</lastmod>
   </sitemap>
 </sitemapindex>`,
     {

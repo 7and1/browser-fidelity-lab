@@ -7,7 +7,7 @@ export const GET: APIRoute = ({ site }) => {
     .map(
       (page) => `  <url>
     <loc>${siteUrl(page.path, origin)}</loc>
-    <lastmod>2026-06-03</lastmod>
+    <lastmod>${page.lastmod}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>`

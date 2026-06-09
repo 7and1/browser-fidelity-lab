@@ -1,5 +1,6 @@
 ---
 import { EnvironmentScanner } from "../../components/EnvironmentScanner";
+import ToolNextStep from "../../components/ToolNextStep.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const schema = {
@@ -62,5 +63,6 @@ const schema = {
         settings remain stable in CI.
       </p>
     </article>
+    <ToolNextStep currentPath="/tools/mobile-browser-fingerprint-test" />
   </section>
 </BaseLayout>
