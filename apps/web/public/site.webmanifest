@@ -1,0 +1,24 @@
+{
+  "name": "Cloak Browser",
+  "short_name": "Cloak",
+  "description": "Browser consistency checks for QA profiles, Playwright presets, WebRTC, timezone, locale, and network drift.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050706",
+  "theme_color": "#050706",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

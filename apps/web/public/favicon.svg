@@ -1,5 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cloak Browser">
-  <rect width="64" height="64" rx="10" fill="#19211e"/>
-  <path d="M14 18h36v28H14z" fill="#f7f8f6"/>
-  <path d="M18 24h28M18 31h18M18 38h24" stroke="#147d6f" stroke-width="4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cloak Browser favicon">
+  <title>Cloak Browser</title>
+  <rect width="64" height="64" rx="14" fill="#050706"/>
+  <path
+    d="M32 8c11 4 19 15 21 34 .6 5-3 10-8 10H19c-5 0-8.6-5-8-10C13 23 21 12 32 8Z"
+    fill="#0d1110"
+  />
+  <path
+    d="M16 43c2-15 8-25 16-30 8 5 14 15 16 30"
+    fill="none"
+    stroke="#2dd4bf"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path d="M20 32c5-7 19-7 24 0-5 7-19 7-24 0Z" fill="#f5f7fb"/>
+  <circle cx="32" cy="32" r="5" fill="#050706"/>
+  <circle cx="32" cy="32" r="2.4" fill="#2dd4bf"/>
+  <path d="M21 48h22" stroke="#6366f1" stroke-width="5" stroke-linecap="round"/>
+  <path d="M24 48h16" stroke="#8ab4ff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
 </svg>
